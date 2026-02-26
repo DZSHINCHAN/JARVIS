@@ -269,7 +269,7 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
   <div class="modal-box">
     <div class="corner-tl"></div><div class="corner-tr"></div><div class="corner-bl"></div><div class="corner-br"></div>
     <div class="modal-title">⚙ OPENAI API KEY</div>
-    <div class="modal-desc">Required for <b style="color:var(--hud3)">image analysis</b> (GPT-4o Vision) and <b style="color:var(--hud3)">image generation</b> (DALL-E 3).<br>Saved in browser local storage only — never transmitted elsewhere.<br><br>▸ <a href="https://platform.openai.com/api-keys" target="_blank" style="color:var(--hud)">platform.openai.com/api-keys</a></div>
+    <div class="modal-desc">Required for <b style="color:var(--hud3)">all AI features</b>: chat (GPT-3.5), image analysis (GPT-4o Vision), and image generation (DALL-E 3).<br>Saved in browser local storage only — never transmitted elsewhere.<br><br>▸ Get your key: <a href="https://platform.openai.com/api-keys" target="_blank" style="color:var(--hud)">platform.openai.com/api-keys</a><br><span style="color:rgba(255,153,0,0.6);font-size:0.6rem;">▸ Free tier works. Requires a funded account for image generation.</span></div>
     <input class="modal-input" id="apiKeyInput" type="password" placeholder="sk-..." onkeydown="if(event.key==='Enter')saveApiKey()">
     <div class="modal-btns">
       <button class="hud-btn" onclick="saveApiKey()" style="flex:1">SAVE & CONNECT</button>
@@ -428,13 +428,13 @@ body::after{content:'';position:fixed;inset:0;background:radial-gradient(ellipse
       <div style="display:flex;flex-direction:column;gap:0.75rem;">
         <div>
           <div class="mini-stat-label" style="font-size:0.62rem;margin-bottom:5px;">SPEECH RATE</div>
-          <input type="range" min="0.5" max="2" step="0.1" value="0.9" id="rateSlider" style="width:100%;accent-color:var(--hud);" oninput="updateVoiceSettings()">
-          <div style="display:flex;justify-content:space-between;font-size:0.56rem;color:var(--text2);margin-top:1px;font-family:'Share Tech Mono',monospace;"><span>0.5x</span><span id="rate-label">0.9x</span><span>2.0x</span></div>
+          <input type="range" min="0.5" max="2" step="0.05" value="0.88" id="rateSlider" style="width:100%;accent-color:var(--hud);" oninput="updateVoiceSettings()">
+          <div style="display:flex;justify-content:space-between;font-size:0.56rem;color:var(--text2);margin-top:1px;font-family:'Share Tech Mono',monospace;"><span>0.5x</span><span id="rate-label">0.88x</span><span>2.0x</span></div>
         </div>
         <div>
           <div class="mini-stat-label" style="font-size:0.62rem;margin-bottom:5px;">PITCH</div>
-          <input type="range" min="0.5" max="1.5" step="0.1" value="0.8" id="pitchSlider" style="width:100%;accent-color:var(--hud2);" oninput="updateVoiceSettings()">
-          <div style="display:flex;justify-content:space-between;font-size:0.56rem;color:var(--text2);margin-top:1px;font-family:'Share Tech Mono',monospace;"><span>LOW</span><span id="pitch-label">0.8</span><span>HIGH</span></div>
+          <input type="range" min="0.5" max="1.5" step="0.05" value="0.82" id="pitchSlider" style="width:100%;accent-color:var(--hud2);" oninput="updateVoiceSettings()">
+          <div style="display:flex;justify-content:space-between;font-size:0.56rem;color:var(--text2);margin-top:1px;font-family:'Share Tech Mono',monospace;"><span>LOW</span><span id="pitch-label">0.82</span><span>HIGH</span></div>
         </div>
         <div>
           <div class="mini-stat-label" style="font-size:0.62rem;margin-bottom:5px;">VOICE PROFILE</div>
@@ -795,7 +795,6 @@ async function sendMessage(text){
   }
 
   const openaiKey=localStorage.getItem('jarvis_openai_key');
-  const cohereKey='pF7g391WplP4RL20bg4JSP4jE9OLLLviaHSeVtvK';
 
   try{
     // CASE 1: Image attached → analyze
@@ -850,18 +849,23 @@ async function sendMessage(text){
       return;
     }
 
-    // CASE 5: Normal AI chat
+    // CASE 5: Normal AI chat — using OpenAI GPT-3.5 (same key as image features)
+    if(!openaiKey){
+      removeTyping();isThinking=false;setArcState('standby');
+      addMsg('system','An OpenAI API key is required for chat, image analysis, and image generation. Click 🔑 API KEY to add yours.');
+      addMsg('jarvis','I require an OpenAI API key to function, sir. Please click the 🔑 API KEY button and enter yours.');
+      showApiKeyModal();return;
+    }
     const memCtx=getMemoriesAsContext();
-    const systemPrompt=`You are J.A.R.V.I.S. — Tony Stark's AI from Iron Man. Respond in SHORT spoken sentences — max 2-3. No markdown, no lists. Natural, dry British wit. Occasionally say "sir". Stay in character.${memCtx}`;
-    const chatMsgs=conversationHistory.slice(0,-1).map(m=>({role:m.role==='user'?'USER':'CHATBOT',message:m.content}));
-    const lastMsg=conversationHistory[conversationHistory.length-1].content;
-    const r=await fetch('https://api.cohere.ai/v1/chat',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+cohereKey},body:JSON.stringify({model:'command-r-08-2024',message:lastMsg,chat_history:chatMsgs,preamble:systemPrompt,max_tokens:300})});
+    const systemPrompt=`You are J.A.R.V.I.S. (Just A Rather Very Intelligent System) — Tony Stark's voice AI assistant from Iron Man. You speak exactly like Paul Bettany's portrayal: calm, precise, dry British wit, slightly formal but warm. Responses must be SHORT — 1 to 3 spoken sentences maximum. Never use markdown, bullet points, or lists. Write for speech, not text. Use natural contractions. Occasionally address the user as "sir". You are helpful, subtly sarcastic when appropriate, and highly intelligent. Never break character.${memCtx}`;
+    const oaiMessages=[{role:'system',content:systemPrompt},...conversationHistory.slice(-14).map(m=>({role:m.role==='user'?'user':'assistant',content:m.content}))];
+    const r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+openaiKey},body:JSON.stringify({model:'gpt-3.5-turbo',messages:oaiMessages,max_tokens:200,temperature:0.75})});
     const data=await r.json();removeTyping();
-    if(data.text){
-      const reply=data.text;
+    if(data.choices&&data.choices[0]){
+      const reply=data.choices[0].message.content.trim();
       conversationHistory.push({role:'assistant',content:reply});if(conversationHistory.length>20)conversationHistory=conversationHistory.slice(-20);
       addMsg('jarvis',reply);saveHistoryItem('jarvis',reply);isThinking=false;setArcState('standby');if(autoSpeak)speak(reply);
-    }else{throw new Error(data.message||'Cohere error');}
+    }else{throw new Error(data.error?.message||'OpenAI error');}
   }catch(err){
     removeTyping();isThinking=false;setArcState('standby');
     addMsg('system','ERROR: '+err.message);addMsg('jarvis','Connectivity issue detected, sir. '+err.message);
@@ -885,36 +889,137 @@ function removeTyping(){const t=document.getElementById('typing-indicator');if(t
 function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
 function clearChat(){document.getElementById('chatArea').innerHTML='';conversationHistory=[];addMsg('system','Conversation log cleared. Memory vault and history retained.');speak('Conversation log cleared, sir.');}
 
-// ===== SPEECH SYNTHESIS =====
+// ===== JARVIS VOICE ENGINE =====
+// Priority voice selection — tries to get the most natural, British/premium voice available
+const JARVIS_VOICE_PRIORITY = [
+  // Premium neural voices (Edge/Chrome)
+  'Microsoft Ryan Online (Natural) - English (United Kingdom)',
+  'Microsoft George Online (Natural) - English (United Kingdom)',
+  'Microsoft Abbi Online (Natural) - English (United Kingdom)',
+  'Google UK English Male',
+  'Google UK English Female',
+  // MacOS/iOS premium
+  'Daniel','Oliver','Arthur','Tom',
+  // Generic British fallbacks
+  'en-GB','en_GB',
+  // US fallback voices
+  'Google US English','Alex','Fred','Daniel',
+  'Microsoft David Desktop - English (United States)',
+];
+
+let jarvisVoice = null;
+let allVoices = [];
+
+function scoreVoice(v){
+  const n=v.name.toLowerCase(),l=v.lang.toLowerCase();
+  let score=0;
+  // British English — highest priority
+  if(l.includes('en-gb')||l.includes('en_gb'))score+=40;
+  // Neural/Natural voices
+  if(n.includes('natural')||n.includes('neural')||n.includes('online'))score+=35;
+  // Google quality
+  if(n.includes('google'))score+=20;
+  // Preferred names
+  if(/ryan|george|daniel|oliver|arthur|david|james|mark|paul/.test(n))score+=15;
+  // English at all
+  if(l.startsWith('en'))score+=10;
+  // Avoid female unless no choice
+  if(/female|woman|girl|zira|susan|hazel|fiona|samantha|karen|victoria|moira/.test(n))score-=5;
+  return score;
+}
+
 function initVoices(){
   const voices=window.speechSynthesis.getVoices();
   if(!voices.length){setTimeout(initVoices,200);return;}
+  allVoices=voices;
   const sel=document.getElementById('voiceSelect');sel.innerHTML='';
-  const eng=voices.filter(v=>v.lang.startsWith('en'));const pref=eng.length?eng:voices;
-  pref.forEach((v,i)=>{const o=document.createElement('option');o.value=i;o.textContent=v.name+(v.lang?` (${v.lang})`:'');sel.appendChild(o);});
-  const maleIdx=pref.findIndex(v=>['male','david','mark','alex','daniel','james','google uk'].some(k=>v.name.toLowerCase().includes(k)));
-  if(maleIdx>=0)sel.value=maleIdx;
-  document.getElementById('speech-stat').textContent='READY';document.getElementById('speech-stat').style.color='var(--hud3)';document.getElementById('speech-bar').style.width='100%';
+  // Show all English voices sorted by score
+  const engVoices=voices.filter(v=>v.lang.startsWith('en')||v.lang.startsWith('en'));
+  const sorted=[...engVoices].sort((a,b)=>scoreVoice(b)-scoreVoice(a));
+  sorted.forEach((v,i)=>{
+    const o=document.createElement('option');
+    o.value=v.name;
+    o.textContent=v.name+(v.lang?` (${v.lang})`:'');
+    sel.appendChild(o);
+  });
+  // Auto-select best voice
+  if(sorted.length){
+    jarvisVoice=sorted[0];
+    sel.value=sorted[0].name;
+    const vname=jarvisVoice.name;
+    const isBritish=jarvisVoice.lang.includes('GB')||jarvisVoice.lang.includes('gb');
+    showNotif(`Voice: ${vname.slice(0,28)} ${isBritish?'🇬🇧':''}`, isBritish?'hud3':'hud');
+  }
+  document.getElementById('speech-stat').textContent='READY';
+  document.getElementById('speech-stat').style.color='var(--hud3)';
+  document.getElementById('speech-bar').style.width='100%';
   showNotif('Speech synthesis online.','hud3');
 }
 window.speechSynthesis.onvoiceschanged=initVoices;setTimeout(initVoices,400);
-function updateVoiceSettings(){const r=document.getElementById('rateSlider').value,p=document.getElementById('pitchSlider').value;document.getElementById('rate-label').textContent=r+'x';document.getElementById('pitch-label').textContent=p;document.getElementById('voice-rate').textContent=r+'x';}
+
+function updateVoiceSettings(){
+  const r=document.getElementById('rateSlider').value,p=document.getElementById('pitchSlider').value;
+  document.getElementById('rate-label').textContent=r+'x';
+  document.getElementById('pitch-label').textContent=p;
+  document.getElementById('voice-rate').textContent=r+'x';
+  // Update selected voice
+  const selName=document.getElementById('voiceSelect').value;
+  const found=allVoices.find(v=>v.name===selName);
+  if(found)jarvisVoice=found;
+}
+
+// Process text to sound more natural/JARVIS-like when spoken
+function processTextForSpeech(text){
+  return text
+    // Expand abbreviations JARVIS would say properly
+    .replace(/\bJ\.A\.R\.V\.I\.S\.?\b/gi,'Jarvis')
+    .replace(/\bAI\b/g,'A. I.')
+    .replace(/\bAPI\b/g,'A. P. I.')
+    .replace(/\bURL\b/g,'U. R. L.')
+    .replace(/\bHTTP[S]?\b/g,'')
+    .replace(/\bGPT\b/g,'G. P. T.')
+    // Clean up markdown leftovers
+    .replace(/[*_`#]/g,'')
+    // Natural pauses with commas
+    .replace(/\.\s+([A-Z])/g,'. $1')
+    // Remove URLs
+    .replace(/https?:\/\/\S+/g,'the provided link')
+    .trim();
+}
+
 function speak(text){
   if(!text||!autoSpeak)return;
   window.speechSynthesis.cancel();
-  const utt=new SpeechSynthesisUtterance(text);
-  const sel=document.getElementById('voiceSelect');
-  const voices=window.speechSynthesis.getVoices().filter(v=>v.lang.startsWith('en'));
-  const all=voices.length?voices:window.speechSynthesis.getVoices();
-  if(all[sel.value])utt.voice=all[sel.value];
-  utt.rate=parseFloat(document.getElementById('rateSlider').value);
-  utt.pitch=parseFloat(document.getElementById('pitchSlider').value);
-  utt.volume=1;
-  utt.onstart=()=>{isSpeaking=true;setArcState('speaking');};
-  utt.onend=utt.onerror=()=>{isSpeaking=false;setArcState('standby');stopVBars();};
-  window.speechSynthesis.speak(utt);
+
+  const processed=processTextForSpeech(text);
+  // For long responses, chunk at sentence boundaries to avoid cutoff bug in Chrome
+  const sentences=processed.match(/[^.!?]+[.!?]+|[^.!?]+$/g)||[processed];
+
+  let idx=0;
+  function speakNext(){
+    if(idx>=sentences.length){isSpeaking=false;setArcState('standby');stopVBars();return;}
+    const utt=new SpeechSynthesisUtterance(sentences[idx].trim());
+    // Use currently selected voice (re-fetch in case user changed it)
+    const selName=document.getElementById('voiceSelect').value;
+    const selectedVoice=allVoices.find(v=>v.name===selName)||jarvisVoice;
+    if(selectedVoice)utt.voice=selectedVoice;
+    // JARVIS voice profile: slightly slower, lower pitch, very clear
+    const baseRate=parseFloat(document.getElementById('rateSlider').value);
+    const basePitch=parseFloat(document.getElementById('pitchSlider').value);
+    utt.rate=baseRate;
+    utt.pitch=basePitch;
+    utt.volume=1;
+    if(idx===0){utt.onstart=()=>{isSpeaking=true;setArcState('speaking');startVBars();};}
+    utt.onend=()=>{idx++;speakNext();};
+    utt.onerror=()=>{idx++;speakNext();};
+    window.speechSynthesis.speak(utt);
+  }
+  speakNext();
 }
-function testVoice(){speak("J.A.R.V.I.S systems fully operational. Website launcher, music player, and image synthesis modules active. Good day, sir.");}
+
+function testVoice(){
+  speak("Good day, sir. J.A.R.V.I.S. is fully operational. All systems are running within normal parameters. Shall I prepare a status report, or is there something more immediately pressing?");
+}
 
 // ===== SPEECH RECOGNITION =====
 function initRecognition(){
@@ -974,11 +1079,12 @@ renderMemories();renderHistory();
 const savedCount=loadMemories().length,hasKey=!!localStorage.getItem('jarvis_openai_key');
 setTimeout(()=>{
   showNotif('J.A.R.V.I.S. systems online.','hud3');
-  const bootMsg=`Good day, sir. All systems operational. You can say "open YouTube", "play Shape of You", or ask me anything. ${savedCount>0?savedCount+' memories loaded. ':''} ${hasKey?'Image systems active.':'Add an OpenAI key via 🔑 for image features.'}`;
+  const bootMsg=`Good day, sir. All systems are operational. ${savedCount>0?savedCount+' stored memories loaded. ':''}${hasKey?'All modules active — ready to assist.':'An OpenAI API key is required. Please click the 🔑 API KEY button to get started.'}`;
   addMsg('jarvis',bootMsg);
   if(autoSpeak)setTimeout(()=>speak('Good day, sir. All systems operational. How may I assist you today?'),700);
 },900);
-setTimeout(()=>showNotif('Tip: Say "open [website]" or "play [song name]"','hud'),2500);
+setTimeout(()=>showNotif('Tip: Say "open [site]" or "play [song name]"','hud'),2500);
+if(!hasKey)setTimeout(()=>{showNotif('⚠ OpenAI key required — click 🔑 API KEY','orange');},3500);
 
 console.log('%cJ.A.R.V.I.S.','color:#00c8ff;font-size:26px;font-weight:900;font-family:monospace;');
 console.log('%cJust A Rather Very Intelligent System v8.0.0','color:#00ffc8;font-size:11px;');
