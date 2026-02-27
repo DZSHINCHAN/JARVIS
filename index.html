@@ -19,18 +19,25 @@
     --text: #c8eeff;
     --text2: rgba(0,212,255,0.6);
     --glow: 0 0 20px rgba(0,212,255,0.4), 0 0 60px rgba(0,212,255,0.1);
+    /* Category colors */
+    --cat-general: #00d4ff;
+    --cat-studies: #a78bfa;
+    --cat-coding: #00ffaa;
+    --cat-find: #ff8800;
+    --cat-gaming: #ff3366;
+    --cat-health: #00ff88;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family:'Rajdhani',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; overflow-x:hidden; user-select:none; }
   body::before { content:''; position:fixed; inset:0; background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,212,255,0.012) 2px,rgba(0,212,255,0.012) 4px); pointer-events:none; z-index:9999; }
   .grid-bg { position:fixed; inset:0; z-index:0; background-image:linear-gradient(rgba(0,212,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.04) 1px,transparent 1px); background-size:50px 50px; mask-image:radial-gradient(ellipse 80% 80% at 50% 50%,black,transparent); }
-  .app { position:relative; z-index:1; min-height:100vh; display:grid; grid-template-rows:auto 1fr auto; grid-template-columns:280px 1fr 280px; gap:0; padding:1rem; }
+  .app { position:relative; z-index:1; min-height:100vh; display:grid; grid-template-rows:auto auto auto 1fr auto; grid-template-columns:280px 1fr 280px; gap:0; padding:1rem; }
   .panel { background:var(--panel); border:1px solid var(--border); border-radius:4px; padding:1rem; position:relative; overflow:hidden; }
   .panel::before { content:''; position:absolute; top:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--hud),transparent); animation:scanH 3s linear infinite; }
   @keyframes scanH { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
   .corner-tl,.corner-tr,.corner-bl,.corner-br { position:absolute; width:12px; height:12px; border-color:var(--hud); border-style:solid; }
   .corner-tl{top:0;left:0;border-width:2px 0 0 2px;} .corner-tr{top:0;right:0;border-width:2px 2px 0 0;} .corner-bl{bottom:0;left:0;border-width:0 0 2px 2px;} .corner-br{bottom:0;right:0;border-width:0 2px 2px 0;}
-  .header { grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; padding:0.75rem 1.5rem; border:1px solid var(--border); background:rgba(0,20,40,0.7); margin-bottom:1rem; position:relative; backdrop-filter:blur(10px); overflow:hidden; }
+  .header { grid-column:1/-1; display:flex; align-items:center; justify-content:space-between; padding:0.75rem 1.5rem; border:1px solid var(--border); background:rgba(0,20,40,0.7); margin-bottom:0.75rem; position:relative; backdrop-filter:blur(10px); overflow:hidden; }
   .header::after { content:''; position:absolute; bottom:0; left:0; right:0; height:1px; background:linear-gradient(90deg,transparent,var(--hud),transparent); animation:scanH 4s linear infinite; }
   .header-logo { font-family:'Orbitron',monospace; font-size:1.4rem; font-weight:900; color:var(--hud); text-shadow:var(--glow); letter-spacing:0.2em; }
   .header-logo span { color:var(--hud3); font-size:0.65rem; display:block; letter-spacing:0.3em; margin-top:-2px; font-weight:400; }
@@ -39,25 +46,51 @@
   .status-item .val { font-size:1rem; color:var(--hud3); font-weight:600; font-family:'Orbitron',monospace; }
   .header-time { font-family:'Orbitron',monospace; font-size:1.5rem; color:var(--hud); text-shadow:var(--glow); letter-spacing:0.1em; }
   .header-date { font-size:0.65rem; color:var(--text2); font-family:'Share Tech Mono',monospace; text-align:right; margin-top:2px; }
-  .left-panel{grid-column:1;grid-row:2;display:flex;flex-direction:column;gap:1rem;padding-right:0.5rem;}
-  .right-panel{grid-column:3;grid-row:2;display:flex;flex-direction:column;gap:1rem;padding-left:0.5rem;}
-  .center{grid-column:2;grid-row:2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1.5rem;padding:0 1rem;}
+
+  /* CATEGORY TABS */
+  .cat-tabs-bar { grid-column:1/-1; display:flex; gap:0; margin-bottom:0.75rem; border:1px solid var(--border); border-radius:4px; overflow:hidden; background:rgba(0,0,0,0.4); }
+  .cat-tab { flex:1; padding:0.65rem 0.5rem; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer; border-right:1px solid var(--border); transition:all 0.25s; position:relative; overflow:hidden; font-family:'Share Tech Mono',monospace; }
+  .cat-tab:last-child { border-right:none; }
+  .cat-tab::before { content:''; position:absolute; bottom:0; left:0; right:0; height:2px; opacity:0; transition:opacity 0.25s; }
+  .cat-tab:hover { background:rgba(0,212,255,0.06); }
+  .cat-tab.active { background:rgba(0,212,255,0.1); }
+  .cat-tab.active::before { opacity:1; }
+  .cat-tab .ct-icon { font-size:1.2rem; line-height:1; }
+  .cat-tab .ct-label { font-size:0.58rem; letter-spacing:0.12em; font-weight:600; }
+  .cat-tab .ct-sub { font-size:0.48rem; letter-spacing:0.08em; opacity:0.6; }
+  /* individual tab colors */
+  .cat-tab[data-cat="general"]::before { background:var(--cat-general); }
+  .cat-tab[data-cat="general"].active .ct-label, .cat-tab[data-cat="general"].active .ct-icon { color:var(--cat-general); text-shadow:0 0 10px var(--cat-general); }
+  .cat-tab[data-cat="studies"]::before { background:var(--cat-studies); }
+  .cat-tab[data-cat="studies"].active .ct-label, .cat-tab[data-cat="studies"].active .ct-icon { color:var(--cat-studies); text-shadow:0 0 10px var(--cat-studies); }
+  .cat-tab[data-cat="coding"]::before { background:var(--cat-coding); }
+  .cat-tab[data-cat="coding"].active .ct-label, .cat-tab[data-cat="coding"].active .ct-icon { color:var(--cat-coding); text-shadow:0 0 10px var(--cat-coding); }
+  .cat-tab[data-cat="find"]::before { background:var(--cat-find); }
+  .cat-tab[data-cat="find"].active .ct-label, .cat-tab[data-cat="find"].active .ct-icon { color:var(--cat-find); text-shadow:0 0 10px var(--cat-find); }
+  .cat-tab[data-cat="gaming"]::before { background:var(--cat-gaming); }
+  .cat-tab[data-cat="gaming"].active .ct-label, .cat-tab[data-cat="gaming"].active .ct-icon { color:var(--cat-gaming); text-shadow:0 0 10px var(--cat-gaming); }
+  .cat-tab[data-cat="health"]::before { background:var(--cat-health); }
+  .cat-tab[data-cat="health"].active .ct-label, .cat-tab[data-cat="health"].active .ct-icon { color:var(--cat-health); text-shadow:0 0 10px var(--cat-health); }
+
+  .left-panel{grid-column:1;grid-row:4;display:flex;flex-direction:column;gap:1rem;padding-right:0.5rem;}
+  .right-panel{grid-column:3;grid-row:4;display:flex;flex-direction:column;gap:1rem;padding-left:0.5rem;}
+  .center{grid-column:2;grid-row:4;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:1rem;padding:0 1rem;}
   .section-label { font-family:'Share Tech Mono',monospace; font-size:0.6rem; color:var(--text2); letter-spacing:0.2em; margin-bottom:0.75rem; display:flex; align-items:center; gap:0.5rem; }
   .section-label::before{content:'▸';color:var(--hud);}
   .section-label::after{content:'';flex:1;height:1px;background:linear-gradient(to right,var(--border),transparent);}
 
   /* ARC REACTOR */
-  .arc-container { position:relative; width:280px; height:280px; display:flex; align-items:center; justify-content:center; }
+  .arc-container { position:relative; width:200px; height:200px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
   .arc-ring { position:absolute; border-radius:50%; }
-  .arc-ring-1 { width:280px; height:280px; border:1px solid rgba(0,212,255,0.12); animation:spinCW 25s linear infinite; }
-  .arc-ring-2 { width:240px; height:240px; border:1px dashed rgba(0,212,255,0.18); animation:spinCCW 18s linear infinite; }
-  .arc-ring-3 { width:200px; height:200px; border:1px solid rgba(0,212,255,0.25); animation:spinCW 12s linear infinite; }
-  .arc-ring-4 { width:160px; height:160px; border:2px solid rgba(0,212,255,0.15); animation:spinCCW 8s linear infinite; }
+  .arc-ring-1 { width:200px; height:200px; border:1px solid rgba(0,212,255,0.12); animation:spinCW 25s linear infinite; }
+  .arc-ring-2 { width:170px; height:170px; border:1px dashed rgba(0,212,255,0.18); animation:spinCCW 18s linear infinite; }
+  .arc-ring-3 { width:142px; height:142px; border:1px solid rgba(0,212,255,0.25); animation:spinCW 12s linear infinite; }
+  .arc-ring-4 { width:114px; height:114px; border:2px solid rgba(0,212,255,0.15); animation:spinCCW 8s linear infinite; }
   @keyframes spinCW{to{transform:rotate(360deg)}} @keyframes spinCCW{to{transform:rotate(-360deg)}}
-  .tick-wrap { position:absolute; width:280px; height:280px; border-radius:50%; pointer-events:none; }
-  .tick { position:absolute; width:1px; height:10px; background:rgba(0,212,255,0.45); left:calc(50% - 0.5px); top:0; transform-origin:50% 140px; }
-  .tick.major { height:16px; width:2px; background:rgba(0,212,255,0.75); left:calc(50% - 1px); }
-  .arc-core { width:126px; height:126px; border-radius:50%; background:radial-gradient(circle,rgba(0,180,255,0.18) 0%,rgba(0,100,200,0.08) 50%,transparent 70%); border:2px solid rgba(0,212,255,0.5); display:flex; align-items:center; justify-content:center; flex-direction:column; position:relative; cursor:pointer; transition:all 0.3s; box-shadow:0 0 30px rgba(0,212,255,0.25),inset 0 0 30px rgba(0,212,255,0.1); }
+  .tick-wrap { position:absolute; width:200px; height:200px; border-radius:50%; pointer-events:none; }
+  .tick { position:absolute; width:1px; height:7px; background:rgba(0,212,255,0.45); left:calc(50% - 0.5px); top:0; transform-origin:50% 100px; }
+  .tick.major { height:11px; width:2px; background:rgba(0,212,255,0.75); left:calc(50% - 1px); }
+  .arc-core { width:90px; height:90px; border-radius:50%; background:radial-gradient(circle,rgba(0,180,255,0.18) 0%,rgba(0,100,200,0.08) 50%,transparent 70%); border:2px solid rgba(0,212,255,0.5); display:flex; align-items:center; justify-content:center; flex-direction:column; position:relative; cursor:pointer; transition:all 0.3s; box-shadow:0 0 30px rgba(0,212,255,0.25),inset 0 0 30px rgba(0,212,255,0.1); }
   .arc-core:hover { box-shadow:0 0 60px rgba(0,212,255,0.5),inset 0 0 40px rgba(0,212,255,0.2); }
   .arc-core.listening { border-color:var(--hud3); box-shadow:0 0 60px rgba(0,255,170,0.5),inset 0 0 40px rgba(0,255,170,0.15); animation:listenPulse 1s ease infinite; }
   .arc-core.speaking { border-color:var(--orange); box-shadow:0 0 60px rgba(255,136,0,0.5),inset 0 0 40px rgba(255,136,0,0.15); animation:speakPulse 0.35s ease infinite; }
@@ -66,13 +99,13 @@
   @keyframes listenPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
   @keyframes speakPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.05)}}
   @keyframes thinkGlow{from{filter:brightness(1)}to{filter:brightness(1.4) hue-rotate(15deg)}}
-  .reactor-glow { width:52px; height:52px; border-radius:50%; background:radial-gradient(circle,rgba(180,240,255,0.95) 0%,rgba(0,180,255,0.7) 35%,rgba(0,100,200,0.3) 65%,transparent 100%); box-shadow:0 0 20px rgba(0,200,255,0.9),0 0 50px rgba(0,150,255,0.5),0 0 80px rgba(0,100,255,0.2); animation:reactorPulse 2s ease infinite; }
+  .reactor-glow { width:36px; height:36px; border-radius:50%; background:radial-gradient(circle,rgba(180,240,255,0.95) 0%,rgba(0,180,255,0.7) 35%,rgba(0,100,200,0.3) 65%,transparent 100%); box-shadow:0 0 20px rgba(0,200,255,0.9),0 0 50px rgba(0,150,255,0.5),0 0 80px rgba(0,100,255,0.2); animation:reactorPulse 2s ease infinite; }
   @keyframes reactorPulse{0%,100%{opacity:0.85;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
-  .arc-status-text { position:absolute; bottom:-30px; font-family:'Share Tech Mono',monospace; font-size:0.65rem; color:var(--hud); letter-spacing:0.2em; text-shadow:var(--glow); white-space:nowrap; }
-  .waveform-container { width:100%; display:flex; align-items:center; justify-content:center; gap:2px; height:40px; }
+  .arc-status-text { position:absolute; bottom:-22px; font-family:'Share Tech Mono',monospace; font-size:0.6rem; color:var(--hud); letter-spacing:0.2em; text-shadow:var(--glow); white-space:nowrap; }
+  .waveform-container { width:100%; display:flex; align-items:center; justify-content:center; gap:2px; height:30px; }
   .wave-bar { width:2px; background:linear-gradient(to top,var(--hud2),var(--hud)); border-radius:1px; opacity:0.25; height:3px; transition:height 0.08s,opacity 0.08s; }
   .wave-bar.active{opacity:1;}
-  .chat-area { width:100%; max-width:640px; height:260px; overflow-y:auto; display:flex; flex-direction:column; gap:0.75rem; padding:1rem; background:rgba(0,0,0,0.35); border:1px solid var(--border); border-radius:4px; }
+  .chat-area { width:100%; max-width:680px; height:300px; overflow-y:auto; display:flex; flex-direction:column; gap:0.75rem; padding:1rem; background:rgba(0,0,0,0.35); border:1px solid var(--border); border-radius:4px; }
   .chat-area::-webkit-scrollbar{width:3px;} .chat-area::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
   .msg { display:flex; flex-direction:column; gap:2px; animation:msgIn 0.3s ease both; }
   @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
@@ -91,12 +124,12 @@
   .typing-dot{width:5px;height:5px;background:var(--hud);border-radius:50%;animation:typingDot 1.2s ease infinite;}
   .typing-dot:nth-child(2){animation-delay:0.2s;} .typing-dot:nth-child(3){animation-delay:0.4s;}
   @keyframes typingDot{0%,60%,100%{opacity:0.2;transform:scale(0.8)}30%{opacity:1;transform:scale(1)}}
-  .img-preview-bar{display:none;align-items:center;gap:0.75rem;width:100%;max-width:640px;padding:0.45rem 0.75rem;background:rgba(0,255,170,0.04);border:1px solid rgba(0,255,170,0.25);border-radius:4px;font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--hud3);letter-spacing:0.1em;}
+  .img-preview-bar{display:none;align-items:center;gap:0.75rem;width:100%;max-width:680px;padding:0.45rem 0.75rem;background:rgba(0,255,170,0.04);border:1px solid rgba(0,255,170,0.25);border-radius:4px;font-family:'Share Tech Mono',monospace;font-size:0.65rem;color:var(--hud3);letter-spacing:0.1em;}
   .img-preview-bar.visible{display:flex;}
   .img-preview-thumb{width:36px;height:36px;object-fit:cover;border:1px solid rgba(0,255,170,0.4);border-radius:3px;}
   .img-preview-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
   .img-preview-clear{background:none;border:none;color:var(--red);cursor:pointer;font-size:1rem;padding:0 4px;line-height:1;}
-  .input-row{display:flex;gap:0.6rem;align-items:center;width:100%;max-width:640px;}
+  .input-row{display:flex;gap:0.6rem;align-items:center;width:100%;max-width:680px;}
   .text-input{flex:1;background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:4px;padding:0.75rem 1rem;font-family:'Rajdhani',sans-serif;font-size:0.95rem;color:var(--text);outline:none;transition:border-color 0.2s,box-shadow 0.2s;letter-spacing:0.02em;}
   .text-input:focus{border-color:var(--border2);box-shadow:var(--glow);}
   .text-input::placeholder{color:rgba(0,212,255,0.25);font-size:0.85rem;letter-spacing:0.1em;}
@@ -124,11 +157,11 @@
   .mem-delete-btn:hover{color:var(--red);}
   .mem-cat-badge{font-family:'Share Tech Mono',monospace;font-size:0.52rem;padding:0.1rem 0.35rem;border-radius:2px;letter-spacing:0.05em;margin-right:4px;}
   .cat-personal{background:rgba(124,58,237,0.2);color:#a78bfa;} .cat-task{background:rgba(255,136,0,0.15);color:var(--orange);} .cat-fact{background:rgba(0,212,255,0.1);color:var(--hud);} .cat-general{background:rgba(255,255,255,0.05);color:var(--text2);}
-  .voice-bars{display:flex;gap:2px;align-items:flex-end;height:60px;padding:0 4px;}
+  .voice-bars{display:flex;gap:2px;align-items:flex-end;height:50px;padding:0 4px;}
   .vbar{flex:1;background:linear-gradient(to top,var(--hud2),var(--hud));border-radius:1px 1px 0 0;height:4px;transition:height 0.08s;opacity:0.6;}
   .quick-cmd{display:flex;align-items:center;gap:8px;padding:0.5rem 0.6rem;background:rgba(0,212,255,0.04);border:1px solid var(--border);border-radius:4px;cursor:pointer;transition:all 0.2s;font-size:0.78rem;letter-spacing:0.02em;color:var(--text2);}
   .quick-cmd:hover{background:rgba(0,212,255,0.1);color:var(--text);border-color:var(--border2);}
-  .quick-cmd .qicon{color:var(--hud);font-size:0.9rem;}
+  .quick-cmd .qicon{font-size:0.9rem;}
   .history-item{padding:0.35rem 0.55rem;background:rgba(0,0,0,0.25);border:1px solid rgba(0,212,255,0.07);border-radius:2px;font-size:0.68rem;color:var(--text2);margin-bottom:0.3rem;cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:6px;}
   .history-item:hover{background:rgba(0,212,255,0.08);color:var(--text);border-color:var(--border);}
   .hi-time{font-family:'Share Tech Mono',monospace;font-size:0.5rem;opacity:0.5;white-space:nowrap;}
@@ -142,7 +175,7 @@
   .launch-bar-fill{height:100%;background:linear-gradient(90deg,var(--hud2),var(--hud));border-radius:99px;animation:launchFill 1.5s ease-out forwards;}
   @keyframes launchFill{from{width:0}to{width:100%}}
   .launch-status{font-family:'Share Tech Mono',monospace;font-size:0.6rem;color:var(--text2);letter-spacing:0.2em;margin-top:0.75rem;}
-  .footer{grid-column:1/-1;margin-top:1rem;border:1px solid var(--border);padding:0.5rem 1.5rem;display:flex;justify-content:space-between;align-items:center;background:rgba(0,20,40,0.4);font-family:'Share Tech Mono',monospace;font-size:0.6rem;color:var(--text2);letter-spacing:0.1em;}
+  .footer{grid-column:1/-1;margin-top:0.75rem;border:1px solid var(--border);padding:0.5rem 1.5rem;display:flex;justify-content:space-between;align-items:center;background:rgba(0,20,40,0.4);font-family:'Share Tech Mono',monospace;font-size:0.6rem;color:var(--text2);letter-spacing:0.1em;}
   #notif{position:fixed;top:1rem;right:1rem;z-index:9000;display:flex;flex-direction:column;gap:0.5rem;}
   .notif-item{background:rgba(0,20,40,0.95);border:1px solid var(--border2);border-left:3px solid var(--hud);padding:0.6rem 1rem;border-radius:4px;font-family:'Share Tech Mono',monospace;font-size:0.7rem;color:var(--text);animation:notifIn 0.3s ease both;backdrop-filter:blur(10px);max-width:300px;}
   @keyframes notifIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
@@ -152,6 +185,44 @@
   .modal-overlay{display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.88);backdrop-filter:blur(8px);align-items:center;justify-content:center;}
   .modal-overlay.visible{display:flex;}
   .modal-box{background:#010d1f;border:1px solid rgba(0,212,255,0.4);border-radius:8px;padding:2rem;max-width:480px;width:90%;box-shadow:0 0 60px rgba(0,212,255,0.2);}
+
+  /* Category context panel */
+  .cat-context { width:100%; max-width:680px; padding:0.6rem 1rem; border-radius:4px; display:flex; align-items:center; gap:12px; font-family:'Share Tech Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; border:1px solid; }
+  .cat-context .ctx-icon { font-size:1.1rem; }
+  .cat-context .ctx-title { font-size:0.75rem; font-weight:600; margin-bottom:2px; }
+  .cat-context .ctx-desc { opacity:0.65; font-size:0.58rem; }
+  /* per-category context colors */
+  .ctx-general { border-color:rgba(0,212,255,0.25); background:rgba(0,212,255,0.04); }
+  .ctx-general .ctx-title { color:var(--cat-general); }
+  .ctx-studies { border-color:rgba(167,139,250,0.25); background:rgba(167,139,250,0.04); }
+  .ctx-studies .ctx-title { color:var(--cat-studies); }
+  .ctx-coding { border-color:rgba(0,255,170,0.25); background:rgba(0,255,170,0.04); }
+  .ctx-coding .ctx-title { color:var(--cat-coding); }
+  .ctx-find { border-color:rgba(255,136,0,0.25); background:rgba(255,136,0,0.04); }
+  .ctx-find .ctx-title { color:var(--cat-find); }
+  .ctx-gaming { border-color:rgba(255,51,102,0.25); background:rgba(255,51,102,0.04); }
+  .ctx-gaming .ctx-title { color:var(--cat-gaming); }
+  .ctx-health { border-color:rgba(0,255,136,0.25); background:rgba(0,255,136,0.04); }
+  .ctx-health .ctx-title { color:var(--cat-health); }
+
+  /* Health symptom pills */
+  .symptom-chip { display:inline-block; padding:0.2rem 0.5rem; background:rgba(0,255,136,0.08); border:1px solid rgba(0,255,136,0.25); border-radius:3px; font-family:'Share Tech Mono',monospace; font-size:0.6rem; color:var(--cat-health); margin:2px; cursor:pointer; transition:all 0.2s; }
+  .symptom-chip:hover { background:rgba(0,255,136,0.18); }
+  /* Code block styling in chat */
+  .msg-text code { background:rgba(0,0,0,0.5); border:1px solid rgba(0,212,255,0.15); border-radius:3px; padding:0.1rem 0.3rem; font-family:'Share Tech Mono',monospace; font-size:0.8rem; color:var(--hud3); }
+  .msg-text pre { background:rgba(0,0,0,0.5); border:1px solid rgba(0,212,255,0.15); border-radius:4px; padding:0.75rem; font-family:'Share Tech Mono',monospace; font-size:0.75rem; color:var(--hud3); overflow-x:auto; margin-top:6px; white-space:pre-wrap; }
+  /* Find result cards */
+  .find-card { background:rgba(255,136,0,0.04); border:1px solid rgba(255,136,0,0.2); border-left:2px solid var(--cat-find); border-radius:3px; padding:0.5rem 0.75rem; margin-top:6px; font-size:0.78rem; }
+  .find-card-title { color:var(--cat-find); font-family:'Share Tech Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; margin-bottom:4px; }
+  .find-card a { color:var(--hud); text-decoration:underline; cursor:pointer; }
+
+  /* Health diagnosis card */
+  .health-card { background:rgba(0,255,136,0.04); border:1px solid rgba(0,255,136,0.2); border-left:2px solid var(--cat-health); border-radius:3px; padding:0.6rem 0.75rem; margin-top:6px; font-size:0.78rem; }
+  .health-card-title { color:var(--cat-health); font-family:'Share Tech Mono',monospace; font-size:0.65rem; letter-spacing:0.1em; margin-bottom:6px; }
+  .health-warning { color:rgba(255,136,0,0.9); font-family:'Share Tech Mono',monospace; font-size:0.6rem; margin-top:8px; padding:4px 8px; background:rgba(255,136,0,0.08); border-radius:2px; border-left:2px solid var(--orange); }
+
+  /* Gaming card */
+  .gaming-card { background:rgba(255,51,102,0.04); border:1px solid rgba(255,51,102,0.2); border-left:2px solid var(--cat-gaming); border-radius:3px; padding:0.5rem 0.75rem; margin-top:6px; font-size:0.78rem; }
 </style>
 </head>
 <body>
@@ -192,13 +263,15 @@
 <div id="notif"></div>
 
 <div class="app">
+  <!-- HEADER -->
   <div class="header glowing">
     <div class="corner-tl"></div><div class="corner-tr"></div><div class="corner-bl"></div><div class="corner-br"></div>
-    <div class="header-logo">J.A.R.V.I.S<span>JUST A RATHER VERY INTELLIGENT SYSTEM · v9.0.0</span></div>
+    <div class="header-logo">J.A.R.V.I.S<span>JUST A RATHER VERY INTELLIGENT SYSTEM · v10.0.0</span></div>
     <div class="header-status">
       <div class="status-item"><span class="val" id="stat-ops">0</span>OPERATIONS</div>
       <div class="status-item"><span class="val" id="stat-uptime">100%</span>UPTIME</div>
       <div class="status-item"><span class="val" id="stat-mode">STANDBY</span>MODE</div>
+      <div class="status-item"><span class="val" id="stat-cat" style="color:var(--cat-general)">GENERAL</span>MODULE</div>
     </div>
     <div>
       <div class="header-time" id="clock">00:00:00</div>
@@ -206,6 +279,41 @@
     </div>
   </div>
 
+  <!-- CATEGORY TABS -->
+  <div class="cat-tabs-bar">
+    <div class="cat-tab active" data-cat="general" onclick="switchCat('general',this)">
+      <span class="ct-icon">🤖</span>
+      <span class="ct-label">GENERAL</span>
+      <span class="ct-sub">Chat · Web · Images</span>
+    </div>
+    <div class="cat-tab" data-cat="studies" onclick="switchCat('studies',this)">
+      <span class="ct-icon">📚</span>
+      <span class="ct-label">STUDIES</span>
+      <span class="ct-sub">Books · Notes · Learn</span>
+    </div>
+    <div class="cat-tab" data-cat="coding" onclick="switchCat('coding',this)">
+      <span class="ct-icon">💻</span>
+      <span class="ct-label">CODING</span>
+      <span class="ct-sub">Code · Debug · Explain</span>
+    </div>
+    <div class="cat-tab" data-cat="find" onclick="switchCat('find',this)">
+      <span class="ct-icon">🔍</span>
+      <span class="ct-label">FIND</span>
+      <span class="ct-sub">Search · Discover · Locate</span>
+    </div>
+    <div class="cat-tab" data-cat="gaming" onclick="switchCat('gaming',this)">
+      <span class="ct-icon">🎮</span>
+      <span class="ct-label">GAMING</span>
+      <span class="ct-sub">Guides · Tips · Walkthroughs</span>
+    </div>
+    <div class="cat-tab" data-cat="health" onclick="switchCat('health',this)">
+      <span class="ct-icon">🏥</span>
+      <span class="ct-label">HEALTH</span>
+      <span class="ct-sub">Symptoms · Diagnosis · Care</span>
+    </div>
+  </div>
+
+  <!-- LEFT PANEL -->
   <div class="left-panel">
     <div class="panel">
       <div class="corner-tl"></div><div class="corner-tr"></div><div class="corner-bl"></div><div class="corner-br"></div>
@@ -222,61 +330,56 @@
       <div class="mini-stat"><span class="mini-stat-label">SPEECH SYS</span><span class="mini-stat-val" id="speech-stat" style="color:var(--orange)">INIT</span></div>
       <div class="bar-track"><div class="bar-fill" id="speech-bar" style="width:0%;background:linear-gradient(90deg,var(--orange),#ffbb00)"></div></div>
       <div style="height:10px"></div>
-      <div class="mini-stat"><span class="mini-stat-label">VISION SYS</span><span class="mini-stat-val" style="color:var(--hud3)">ONLINE</span></div>
-      <div class="bar-track"><div class="bar-fill" style="width:100%;background:linear-gradient(90deg,#0066ff,#00d4ff)"></div></div>
+      <div class="mini-stat"><span class="mini-stat-label">ACTIVE MODULE</span><span class="mini-stat-val" id="diag-cat" style="color:var(--cat-general)">GENERAL</span></div>
+      <div class="bar-track"><div class="bar-fill" id="cat-bar" style="width:100%;background:linear-gradient(90deg,#0066ff,#00d4ff)"></div></div>
     </div>
 
-    <div class="panel" style="flex:1;overflow:hidden;display:flex;flex-direction:column;">
+    <!-- DYNAMIC LEFT PANEL based on category -->
+    <div class="panel" style="flex:1;overflow:hidden;display:flex;flex-direction:column;" id="leftDynamic">
       <div class="corner-tl"></div><div class="corner-tr"></div><div class="corner-bl"></div><div class="corner-br"></div>
-      <div class="section-label">MEMORY VAULT <span id="mem-count" style="color:var(--hud3);margin-left:4px;font-size:0.6rem;">0 STORED</span></div>
-      <div style="display:flex;gap:0.4rem;margin-bottom:0.6rem;">
-        <input id="memInput" placeholder="Save something for JARVIS to remember..." style="flex:1;background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:3px;padding:0.4rem 0.6rem;font-family:'Rajdhani',sans-serif;font-size:0.78rem;color:var(--text);outline:none;" onkeydown="if(event.key==='Enter')saveMemory()">
-        <button class="hud-btn" onclick="saveMemory()" style="padding:0.4rem 0.6rem;font-size:0.65rem;">SAVE</button>
-      </div>
-      <div style="display:flex;gap:0.3rem;margin-bottom:0.6rem;flex-wrap:wrap;">
-        <button class="mem-tab active" onclick="filterMemories('all',this)">ALL</button>
-        <button class="mem-tab" onclick="filterMemories('personal',this)">PERSONAL</button>
-        <button class="mem-tab" onclick="filterMemories('task',this)">TASKS</button>
-        <button class="mem-tab" onclick="filterMemories('fact',this)">FACTS</button>
-      </div>
-      <div id="memory-list" style="flex:1;overflow-y:auto;"></div>
-      <button class="hud-btn danger" onclick="clearAllMemories()" style="width:100%;margin-top:0.5rem;font-size:0.65rem;">⚠ WIPE ALL MEMORIES</button>
+      <div class="section-label" id="leftDynLabel">MEMORY VAULT <span id="mem-count" style="color:var(--hud3);margin-left:4px;font-size:0.6rem;">0</span></div>
+      <div id="leftDynContent"></div>
     </div>
 
     <div class="panel">
       <div class="corner-tl"></div><div class="corner-tr"></div><div class="corner-bl"></div><div class="corner-br"></div>
       <div class="section-label">QUICK COMMANDS</div>
-      <div style="display:flex;flex-direction:column;gap:0.4rem;">
-        <div class="quick-cmd" onclick="quickCmd('open youtube')"><span class="qicon">▶</span>OPEN YOUTUBE</div>
-        <div class="quick-cmd" onclick="quickCmd('play lofi hip hop music')"><span class="qicon">🎵</span>PLAY LOFI MUSIC</div>
-        <div class="quick-cmd" onclick="quickCmd('open google')"><span class="qicon">🌐</span>OPEN GOOGLE</div>
-        <div class="quick-cmd" onclick="quickCmd('Generate an image of the Iron Man suit glowing in a futuristic Stark Industries lab.')"><span class="qicon">🖼️</span>GENERATE IMAGE</div>
-        <div class="quick-cmd" onclick="quickCmd('Tell me something fascinating about artificial intelligence.')"><span class="qicon">🧠</span>AI BRIEFING</div>
-        <div class="quick-cmd" onclick="quickCmd('Give me a motivational speech in the style of Tony Stark.')"><span class="qicon">🎯</span>TONY STARK MODE</div>
-      </div>
+      <div style="display:flex;flex-direction:column;gap:0.4rem;" id="quickCmdsPanel"></div>
     </div>
   </div>
 
+  <!-- CENTER -->
   <div class="center">
-    <div class="arc-container">
-      <div class="tick-wrap" id="tickWrap"></div>
-      <div class="arc-ring arc-ring-1"></div>
-      <div class="arc-ring arc-ring-2"></div>
-      <div class="arc-ring arc-ring-3"></div>
-      <div class="arc-ring arc-ring-4"></div>
-      <div style="position:absolute;width:280px;height:280px;border-radius:50%;animation:spinCW 25s linear infinite;">
-        <div style="position:absolute;width:6px;height:6px;border-radius:50%;background:var(--hud);box-shadow:0 0 10px var(--hud),0 0 20px var(--hud);top:-3px;left:calc(50% - 3px);"></div>
+    <div style="display:flex;align-items:center;gap:1.5rem;width:100%;max-width:680px;justify-content:center;">
+      <div class="arc-container">
+        <div class="tick-wrap" id="tickWrap"></div>
+        <div class="arc-ring arc-ring-1"></div>
+        <div class="arc-ring arc-ring-2"></div>
+        <div class="arc-ring arc-ring-3"></div>
+        <div class="arc-ring arc-ring-4"></div>
+        <div style="position:absolute;width:200px;height:200px;border-radius:50%;animation:spinCW 25s linear infinite;">
+          <div style="position:absolute;width:5px;height:5px;border-radius:50%;background:var(--hud);box-shadow:0 0 10px var(--hud),0 0 20px var(--hud);top:-2.5px;left:calc(50% - 2.5px);"></div>
+        </div>
+        <div style="position:absolute;width:142px;height:142px;border-radius:50%;animation:spinCW 12s linear infinite;">
+          <div style="position:absolute;width:4px;height:4px;border-radius:50%;background:var(--hud3);box-shadow:0 0 8px var(--hud3),0 0 16px var(--hud3);top:-2px;left:calc(50% - 2px);"></div>
+        </div>
+        <div class="arc-core" id="arcCore" onclick="toggleListen()">
+          <div class="reactor-glow"></div>
+          <div class="arc-status-text" id="arcStatusText">CLICK TO SPEAK</div>
+        </div>
       </div>
-      <div style="position:absolute;width:200px;height:200px;border-radius:50%;animation:spinCW 12s linear infinite;">
-        <div style="position:absolute;width:5px;height:5px;border-radius:50%;background:var(--hud3);box-shadow:0 0 8px var(--hud3),0 0 16px var(--hud3);top:-2.5px;left:calc(50% - 2.5px);"></div>
-      </div>
-      <div class="arc-core" id="arcCore" onclick="toggleListen()">
-        <div class="reactor-glow"></div>
-        <div class="arc-status-text" id="arcStatusText">CLICK TO SPEAK</div>
+      <div style="display:flex;flex-direction:column;gap:8px;flex:1;">
+        <div class="waveform-container" id="waveform"></div>
+        <!-- Category context banner -->
+        <div class="cat-context ctx-general" id="catContextBanner">
+          <span class="ctx-icon">🤖</span>
+          <div>
+            <div class="ctx-title" id="ctxTitle">GENERAL MODE</div>
+            <div class="ctx-desc" id="ctxDesc">Chat freely · Open websites · Play music · Generate images · Ask anything</div>
+          </div>
+        </div>
       </div>
     </div>
-
-    <div class="waveform-container" id="waveform"></div>
 
     <div class="chat-area" id="chatArea">
       <div class="msg system">
@@ -295,7 +398,7 @@
     <div class="input-row">
       <button class="img-attach-btn" id="imgAttachBtn" onclick="document.getElementById('imgFileInput').click()" title="Attach image">📎</button>
       <input type="file" id="imgFileInput" accept="image/*" style="display:none" onchange="handleImageAttach(event)">
-      <input class="text-input" id="textInput" placeholder='Try: "open youtube" · "play [song]" · "generate image of..."' onkeydown="if(event.key==='Enter')sendText()" autocomplete="off">
+      <input class="text-input" id="textInput" placeholder="Ask JARVIS anything..." onkeydown="if(event.key==='Enter')sendText()" autocomplete="off">
       <button class="hud-btn" onclick="sendText()">SEND</button>
       <button class="hud-btn" id="voiceBtn" onclick="toggleListen()">🎤 VOICE</button>
     </div>
@@ -308,6 +411,7 @@
     </div>
   </div>
 
+  <!-- RIGHT PANEL -->
   <div class="right-panel">
     <div class="panel">
       <div class="corner-tl"></div><div class="corner-tr"></div><div class="corner-bl"></div><div class="corner-br"></div>
@@ -316,9 +420,6 @@
       <div style="margin-top:0.75rem;display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;">
         <div style="display:flex;flex-direction:column;gap:2px;"><span class="mini-stat-label" style="font-size:0.58rem;">RECOGNITION</span><span class="mini-stat-val" id="rec-accuracy">--</span></div>
         <div style="display:flex;flex-direction:column;gap:2px;"><span class="mini-stat-label" style="font-size:0.58rem;">VOICE RATE</span><span class="mini-stat-val" id="voice-rate" style="color:var(--hud2)">0.88x</span></div>
-      </div>
-      <div style="margin-top:0.6rem;padding:0.5rem;background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.1);border-radius:3px;font-family:'Share Tech Mono',monospace;font-size:0.58rem;color:var(--text2);line-height:1.6;">
-        🇬🇧 <b style="color:var(--hud)">Best JARVIS voice:</b> Use <b style="color:var(--hud3)">Microsoft Edge</b> browser — unlocks "Ryan (Natural) UK" neural voice
       </div>
     </div>
 
@@ -354,24 +455,14 @@
     <div class="panel">
       <div class="corner-tl"></div><div class="corner-tr"></div><div class="corner-bl"></div><div class="corner-br"></div>
       <div class="section-label">CAPABILITIES</div>
-      <div style="display:flex;flex-direction:column;gap:0.45rem;font-size:0.76rem;">
-        <div style="display:flex;align-items:center;gap:8px;"><span style="color:var(--hud3);">◉</span><span style="color:var(--text2);">Voice recognition (STT)</span></div>
-        <div style="display:flex;align-items:center;gap:8px;"><span style="color:var(--hud3);">◉</span><span style="color:var(--text2);">JARVIS-tuned British voice</span></div>
-        <div style="display:flex;align-items:center;gap:8px;"><span style="color:var(--hud3);">◉</span><span style="color:var(--text2);">Cohere AI chat (free key built-in)</span></div>
-        <div style="display:flex;align-items:center;gap:8px;"><span style="color:var(--hud3);">◉</span><span style="color:var(--text2);">Open any website</span></div>
-        <div style="display:flex;align-items:center;gap:8px;"><span style="color:var(--hud3);">◉</span><span style="color:var(--text2);">Play music on YouTube</span></div>
-        <div style="display:flex;align-items:center;gap:8px;"><span style="color:var(--hud3);">◉</span><span style="color:var(--text2);">Persistent memory vault</span></div>
-        <div style="display:flex;align-items:center;gap:8px;"><span style="color:var(--hud3);">◉</span><span style="color:var(--text2);">Chat history log</span></div>
-        <div style="display:flex;align-items:center;gap:8px;"><span style="color:var(--hud);">◎</span><span style="color:var(--text2);">Image analysis — OpenAI key</span></div>
-        <div style="display:flex;align-items:center;gap:8px;"><span style="color:var(--hud);">◎</span><span style="color:var(--text2);">DALL-E 3 image gen — OpenAI key</span></div>
-      </div>
+      <div style="display:flex;flex-direction:column;gap:0.35rem;font-size:0.74rem;" id="capsList"></div>
     </div>
   </div>
 
   <div class="footer">
     <span>STARK INDUSTRIES · ADVANCED AI DIVISION · CONFIDENTIAL</span>
-    <span id="footer-status">SYSTEM NOMINAL · COHERE AI ONLINE</span>
-    <span>BUILD 9.0.0 · <span id="session-id">SES-XXXX</span></span>
+    <span id="footer-status">SYSTEM NOMINAL · COHERE AI ONLINE · MODULE: GENERAL</span>
+    <span>BUILD 10.0.0 · <span id="session-id">SES-XXXX</span></span>
   </div>
 </div>
 
@@ -383,14 +474,291 @@ const sessionId='SES-'+Math.random().toString(36).substr(2,6).toUpperCase();
 document.getElementById('session-id').textContent=sessionId;
 let conversationHistory=[],isListening=false,isSpeaking=false,isThinking=false,autoSpeak=true,totalOps=0,recognition=null,currentMemFilter='all';
 let allVoices=[],selectedVoice=null;
+let currentCat='general';
 
-// Tick marks on arc reactor
+// ============================================================
+// CATEGORY DEFINITIONS
+// ============================================================
+const CAT_CONFIG = {
+  general: {
+    color:'var(--cat-general)',
+    ctxClass:'ctx-general',
+    icon:'🤖',
+    title:'GENERAL MODE',
+    desc:'Chat freely · Open websites · Play music · Generate images · Ask anything',
+    placeholder:'Try: "open youtube" · "play [song]" · "generate image of..." · ask anything',
+    systemPrompt:`You are J.A.R.V.I.S. (Just A Rather Very Intelligent System), Tony Stark's AI. Speak like Paul Bettany's JARVIS: calm, precise, dry British wit, slightly formal but warm. Keep ALL responses to 1-3 short spoken sentences. No bullet points, no markdown, no lists. Write for speech. Use natural contractions. Call the user "sir" occasionally. Never break character.`,
+    quickCmds:[
+      {icon:'▶',label:'OPEN YOUTUBE',cmd:'open youtube'},
+      {icon:'🎵',label:'PLAY LOFI MUSIC',cmd:'play lofi hip hop music'},
+      {icon:'🌐',label:'OPEN GOOGLE',cmd:'open google'},
+      {icon:'🖼️',label:'GENERATE IMAGE',cmd:'Generate an image of the Iron Man suit glowing in a futuristic Stark Industries lab.'},
+      {icon:'🎯',label:'TONY STARK MODE',cmd:'Give me a motivational speech in the style of Tony Stark.'},
+      {icon:'🧠',label:'AI BRIEFING',cmd:'Tell me something fascinating about artificial intelligence.'},
+    ],
+    caps:[
+      {ok:true,t:'Voice recognition (STT)'},{ok:true,t:'JARVIS-tuned British voice'},{ok:true,t:'Cohere AI chat'},
+      {ok:true,t:'Open any website'},{ok:true,t:'Play music on YouTube'},{ok:true,t:'Persistent memory vault'},
+      {ok:false,t:'Image analysis (OpenAI key)'},{ok:false,t:'DALL-E 3 image gen (OpenAI key)'},
+    ]
+  },
+  studies: {
+    color:'var(--cat-studies)',
+    ctxClass:'ctx-studies',
+    icon:'📚',
+    title:'STUDIES MODULE',
+    desc:'Find books online · Summarize content · Explain concepts · Create study notes',
+    placeholder:'Try: "summarize [topic]" · "find book: [title]" · "explain [concept]" · "make notes on [subject]"',
+    systemPrompt:`You are J.A.R.V.I.S. in STUDIES MODE — an expert academic assistant. Help the user learn, summarize topics, find books, explain concepts, and create study notes. Be educational but still speak in JARVIS's calm British style. When summarizing books or topics: give a structured but concise breakdown. When explaining concepts: use clear analogies. When making notes: use organized key points. Always provide actionable academic guidance. Address user as "sir". For book finding, always suggest: Google Books (books.google.com), Open Library (openlibrary.org), Project Gutenberg (gutenberg.org), or relevant academic resources. Keep responses clear and educational.`,
+    quickCmds:[
+      {icon:'📖',label:'FIND BOOK',cmd:'find me the book: Atomic Habits by James Clear'},
+      {icon:'📝',label:'SUMMARIZE TOPIC',cmd:'Give me a detailed summary of the French Revolution'},
+      {icon:'🔬',label:'EXPLAIN CONCEPT',cmd:'Explain quantum entanglement in simple terms'},
+      {icon:'📋',label:'STUDY NOTES',cmd:'Create study notes on photosynthesis for biology'},
+      {icon:'🧮',label:'MATH HELP',cmd:'Explain the concept of derivatives in calculus'},
+      {icon:'📜',label:'HISTORY BRIEF',cmd:'Brief me on World War 2 key events and causes'},
+    ],
+    caps:[
+      {ok:true,t:'Book finding & links'},{ok:true,t:'Topic summaries'},{ok:true,t:'Concept explanations'},
+      {ok:true,t:'Study note creation'},{ok:true,t:'Academic research guidance'},{ok:true,t:'Multi-subject support'},
+      {ok:true,t:'Exam preparation tips'},{ok:true,t:'Citation suggestions'},
+    ]
+  },
+  coding: {
+    color:'var(--cat-coding)',
+    ctxClass:'ctx-coding',
+    icon:'💻',
+    title:'CODING MODULE',
+    desc:'Write code · Debug errors · Explain algorithms · Review & optimize your code',
+    placeholder:'Try: "write a Python function for..." · "debug this code: [paste]" · "explain recursion" · "what is Big O notation"',
+    systemPrompt:`You are J.A.R.V.I.S. in CODING MODE — an expert software engineer and debugger. Help with all programming tasks: writing code, debugging, explaining algorithms, code review, and architecture advice. Speak in JARVIS's style but be technically precise. Format code in code blocks using triple backticks with the language specified. When debugging: identify the issue clearly first, then provide the fix. When explaining: use concrete examples. When writing code: add brief inline comments. Support all major languages: Python, JavaScript, TypeScript, Java, C++, C#, Go, Rust, SQL, HTML/CSS, and more. Address user as "sir".`,
+    quickCmds:[
+      {icon:'🐍',label:'PYTHON FUNCTION',cmd:'Write a Python function to reverse a linked list'},
+      {icon:'🌐',label:'JS SNIPPET',cmd:'Write a JavaScript function to debounce an API call'},
+      {icon:'🐛',label:'DEBUG HELP',cmd:'How do I debug a null pointer exception in Java?'},
+      {icon:'⚡',label:'ALGORITHM',cmd:'Explain binary search algorithm with code example'},
+      {icon:'🗄️',label:'SQL QUERY',cmd:'Write a SQL query to find duplicate records in a table'},
+      {icon:'📐',label:'CODE REVIEW',cmd:'What are SOLID principles in software engineering?'},
+    ],
+    caps:[
+      {ok:true,t:'Multi-language support (20+ langs)'},{ok:true,t:'Code writing & generation'},{ok:true,t:'Bug detection & fixing'},
+      {ok:true,t:'Algorithm explanations'},{ok:true,t:'Code review & optimization'},{ok:true,t:'Architecture guidance'},
+      {ok:true,t:'Data structures help'},{ok:true,t:'Interview prep'},
+    ]
+  },
+  find: {
+    color:'var(--cat-find)',
+    ctxClass:'ctx-find',
+    icon:'🔍',
+    title:'FIND MODULE',
+    desc:'Search the internet · Locate resources · Find anything you need · Deep web research',
+    placeholder:'Try: "find me information about..." · "where can I download..." · "locate the best resource for..." · "search for..."',
+    systemPrompt:`You are J.A.R.V.I.S. in FIND MODE — an expert internet researcher and information locator. Your goal is to help the user find ANYTHING on the internet. Always provide: 1) Direct links to the best resources, 2) Multiple source options, 3) Specific search queries they can use. For each find request, give: the best direct URL/site, alternative sources, and a Google search link. Format your response to include clickable resource recommendations. Be thorough — provide 3-5 resources minimum. Speak in JARVIS style. Address user as "sir". When finding things: always include direct links formatted as [RESOURCE NAME]: URL`,
+    quickCmds:[
+      {icon:'🎓',label:'FIND COURSE',cmd:'Find me the best free online courses for machine learning'},
+      {icon:'📰',label:'FIND NEWS',cmd:'Find latest technology news sources'},
+      {icon:'🛠️',label:'FIND TOOL',cmd:'Find the best free design tools for beginners'},
+      {icon:'📄',label:'FIND PAPER',cmd:'Find research papers on neural networks'},
+      {icon:'🎬',label:'FIND MOVIE',cmd:'Find where I can watch Interstellar online'},
+      {icon:'🔧',label:'FIND SOFTWARE',cmd:'Find the best free video editing software for Windows'},
+    ],
+    caps:[
+      {ok:true,t:'Internet resource location'},{ok:true,t:'Direct link provision'},{ok:true,t:'Multiple source options'},
+      {ok:true,t:'Research paper finding'},{ok:true,t:'Software & tool discovery'},{ok:true,t:'Media location'},
+      {ok:true,t:'Academic resource search'},{ok:true,t:'Deep web research guidance'},
+    ]
+  },
+  gaming: {
+    color:'var(--cat-gaming)',
+    ctxClass:'ctx-gaming',
+    icon:'🎮',
+    title:'GAMING MODULE',
+    desc:'Game guides · Walkthroughs · Tips & strategies · News · Game recommendations',
+    placeholder:'Try: "how to beat [boss]" · "best build for [game]" · "walkthrough for [level]" · "recommend games like..."',
+    systemPrompt:`You are J.A.R.V.I.S. in GAMING MODE — an expert gaming assistant with encyclopedic knowledge of video games. You know all major games, strategies, lore, walkthroughs, speedrun techniques, meta builds, tier lists, and gaming news. Help with: boss strategies, optimal builds/loadouts, story explanations, achievement hunting, game recommendations, esports intel, and hardware advice. Keep JARVIS's dry wit — you can make gaming references with humor. Be specific and tactical. If asked about boss fights, give precise strategies. For builds, give specific items/stats. Address user as "sir".`,
+    quickCmds:[
+      {icon:'⚔️',label:'BOSS STRATEGY',cmd:'How do I beat the final boss in Elden Ring - Radagon/Elden Beast?'},
+      {icon:'🏆',label:'BEST BUILDS',cmd:'What is the best endgame build for Baldurs Gate 3?'},
+      {icon:'🎯',label:'GAME RECOMMEND',cmd:'Recommend me games similar to The Witcher 3'},
+      {icon:'🗺️',label:'WALKTHROUGH',cmd:'Walkthrough tips for getting started in Dark Souls'},
+      {icon:'📊',label:'META TIER LIST',cmd:'Current meta tier list for League of Legends mid lane'},
+      {icon:'🎪',label:'GAMING NEWS',cmd:'What are the most anticipated game releases this year?'},
+    ],
+    caps:[
+      {ok:true,t:'Boss fight strategies'},{ok:true,t:'Optimal builds & loadouts'},{ok:true,t:'Story & lore explanations'},
+      {ok:true,t:'Game recommendations'},{ok:true,t:'Achievement/trophy guides'},{ok:true,t:'Speedrun techniques'},
+      {ok:true,t:'Esports & meta analysis'},{ok:true,t:'Hardware & settings advice'},
+    ]
+  },
+  health: {
+    color:'var(--cat-health)',
+    ctxClass:'ctx-health',
+    icon:'🏥',
+    title:'HEALTH MODULE',
+    desc:'Symptom analysis · Possible conditions · First aid · Wellness guidance · ALWAYS consult a doctor',
+    placeholder:'Describe your symptoms: "I have a fever, headache and sore throat" · "rash on my arm for 3 days" · "chest pain when breathing"',
+    systemPrompt:`You are J.A.R.V.I.S. in HEALTH MODULE — a knowledgeable medical information assistant with access to extensive medical databases. When the user describes symptoms, analyze them systematically and provide: 1) Most likely conditions (ranked by probability based on symptoms), 2) Other possible conditions to consider, 3) Severity assessment (mild/moderate/urgent/emergency), 4) Immediate first aid if applicable, 5) When to see a doctor. ALWAYS: - Be thorough in symptom analysis - List multiple possible conditions - Include a clear DISCLAIMER that this is informational only and NOT a substitute for professional medical advice - Recommend seeking immediate medical attention for emergency symptoms. Speak in JARVIS style but be medically precise. Format clearly. Address user as "sir". Use proper medical terminology alongside plain language.`,
+    quickCmds:[
+      {icon:'🤒',label:'FEVER + SYMPTOMS',cmd:'I have a high fever of 39°C, headache, body aches, and fatigue for 2 days'},
+      {icon:'💊',label:'CHEST PAIN',cmd:'I have chest tightness and shortness of breath when I climb stairs'},
+      {icon:'🤕',label:'HEAD PAIN',cmd:'I have a severe throbbing headache behind my eyes with light sensitivity'},
+      {icon:'🤢',label:'STOMACH ISSUES',cmd:'I have nausea, stomach cramps, and loose stools since this morning'},
+      {icon:'🦷',label:'SKIN ISSUES',cmd:'I have a red itchy rash spreading on my forearms'},
+      {icon:'😴',label:'WELLNESS CHECK',cmd:'I feel constantly tired even after sleeping 8 hours, what could it be?'},
+    ],
+    caps:[
+      {ok:true,t:'Symptom analysis'},{ok:true,t:'Likely disease identification'},{ok:true,t:'Severity assessment'},
+      {ok:true,t:'Differential diagnosis'},{ok:true,t:'First aid guidance'},{ok:true,t:'When-to-see-doctor advice'},
+      {ok:true,t:'General wellness tips'},{ok:false,t:'NOT a replacement for real doctors'},
+    ]
+  }
+};
+
+// ============================================================
+// CATEGORY SWITCHING
+// ============================================================
+function switchCat(cat, tabEl) {
+  currentCat = cat;
+  // Update tab UI
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+  tabEl.classList.add('active');
+  // Update context banner
+  const cfg = CAT_CONFIG[cat];
+  const banner = document.getElementById('catContextBanner');
+  banner.className = 'cat-context ' + cfg.ctxClass;
+  document.getElementById('ctxTitle').textContent = cfg.title;
+  document.getElementById('ctxDesc').textContent = cfg.desc;
+  // Update input placeholder
+  document.getElementById('textInput').placeholder = cfg.placeholder;
+  // Update header module
+  document.getElementById('stat-cat').textContent = cat.toUpperCase();
+  document.getElementById('stat-cat').style.color = cfg.color;
+  document.getElementById('diag-cat').textContent = cat.toUpperCase();
+  document.getElementById('diag-cat').style.color = cfg.color;
+  document.getElementById('footer-status').textContent = `SYSTEM NOMINAL · COHERE AI ONLINE · MODULE: ${cat.toUpperCase()}`;
+  // Update quick commands
+  renderQuickCmds(cat);
+  // Update capabilities
+  renderCaps(cat);
+  // Update left dynamic panel
+  renderLeftDynamic(cat);
+  // Show category notification
+  showNotif(`Switched to ${cfg.icon} ${cfg.title}`, 'hud3');
+  speak(`${cfg.title.split(' ')[0].toLowerCase()} module activated, sir.`);
+  // Clear conversation context for new category
+  conversationHistory = [];
+  addMsg('system', `◈ MODULE SWITCH: ${cfg.icon} ${cfg.title} — ${cfg.desc}`);
+}
+
+function renderQuickCmds(cat) {
+  const cmds = CAT_CONFIG[cat].quickCmds;
+  const panel = document.getElementById('quickCmdsPanel');
+  panel.innerHTML = cmds.map(c=>`<div class="quick-cmd" onclick="quickCmd('${c.cmd.replace(/'/g,"\\'")}')"><span class="qicon">${c.icon}</span>${c.label}</div>`).join('');
+}
+
+function renderCaps(cat) {
+  const caps = CAT_CONFIG[cat].caps;
+  const el = document.getElementById('capsList');
+  el.innerHTML = caps.map(c=>`<div style="display:flex;align-items:center;gap:8px;"><span style="color:${c.ok?'var(--hud3)':'var(--orange)'};">${c.ok?'◉':'◎'}</span><span style="color:var(--text2);font-size:0.74rem;">${c.t}</span></div>`).join('');
+}
+
+function renderLeftDynamic(cat) {
+  const label = document.getElementById('leftDynLabel');
+  const content = document.getElementById('leftDynContent');
+  if(cat === 'general') {
+    label.innerHTML = 'MEMORY VAULT <span id="mem-count" style="color:var(--hud3);margin-left:4px;font-size:0.6rem;">'+loadMemories().length+' STORED</span>';
+    content.innerHTML = `
+      <div style="display:flex;gap:0.4rem;margin-bottom:0.6rem;">
+        <input id="memInput" placeholder="Save for JARVIS to remember..." style="flex:1;background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:3px;padding:0.4rem 0.6rem;font-family:'Rajdhani',sans-serif;font-size:0.78rem;color:var(--text);outline:none;" onkeydown="if(event.key==='Enter')saveMemory()">
+        <button class="hud-btn" onclick="saveMemory()" style="padding:0.4rem 0.6rem;font-size:0.65rem;">SAVE</button>
+      </div>
+      <div style="display:flex;gap:0.3rem;margin-bottom:0.6rem;flex-wrap:wrap;">
+        <button class="mem-tab active" onclick="filterMemories('all',this)">ALL</button>
+        <button class="mem-tab" onclick="filterMemories('personal',this)">PERSONAL</button>
+        <button class="mem-tab" onclick="filterMemories('task',this)">TASKS</button>
+        <button class="mem-tab" onclick="filterMemories('fact',this)">FACTS</button>
+      </div>
+      <div id="memory-list" style="max-height:140px;overflow-y:auto;"></div>
+      <button class="hud-btn danger" onclick="clearAllMemories()" style="width:100%;margin-top:0.5rem;font-size:0.65rem;">⚠ WIPE ALL MEMORIES</button>
+    `;
+    renderMemories();
+  } else if(cat === 'studies') {
+    label.innerHTML = 'STUDY RESOURCES';
+    content.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:0.4rem;font-size:0.72rem;">
+        <a href="https://books.google.com" target="_blank" class="quick-cmd"><span class="qicon">📗</span>Google Books</a>
+        <a href="https://openlibrary.org" target="_blank" class="quick-cmd"><span class="qicon">📙</span>Open Library</a>
+        <a href="https://gutenberg.org" target="_blank" class="quick-cmd"><span class="qicon">📘</span>Project Gutenberg</a>
+        <a href="https://scholar.google.com" target="_blank" class="quick-cmd"><span class="qicon">🔬</span>Google Scholar</a>
+        <a href="https://khanacademy.org" target="_blank" class="quick-cmd"><span class="qicon">🎓</span>Khan Academy</a>
+        <a href="https://coursera.org" target="_blank" class="quick-cmd"><span class="qicon">📡</span>Coursera</a>
+        <a href="https://arxiv.org" target="_blank" class="quick-cmd"><span class="qicon">📄</span>arXiv Papers</a>
+      </div>
+    `;
+  } else if(cat === 'coding') {
+    label.innerHTML = 'DEV RESOURCES';
+    content.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:0.4rem;font-size:0.72rem;">
+        <a href="https://github.com" target="_blank" class="quick-cmd"><span class="qicon">🐙</span>GitHub</a>
+        <a href="https://stackoverflow.com" target="_blank" class="quick-cmd"><span class="qicon">💬</span>Stack Overflow</a>
+        <a href="https://developer.mozilla.org" target="_blank" class="quick-cmd"><span class="qicon">🌐</span>MDN Web Docs</a>
+        <a href="https://docs.python.org" target="_blank" class="quick-cmd"><span class="qicon">🐍</span>Python Docs</a>
+        <a href="https://leetcode.com" target="_blank" class="quick-cmd"><span class="qicon">⚡</span>LeetCode</a>
+        <a href="https://replit.com" target="_blank" class="quick-cmd"><span class="qicon">🛠️</span>Replit IDE</a>
+        <a href="https://codepen.io" target="_blank" class="quick-cmd"><span class="qicon">✏️</span>CodePen</a>
+      </div>
+    `;
+  } else if(cat === 'find') {
+    label.innerHTML = 'SEARCH ENGINES';
+    content.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:0.4rem;font-size:0.72rem;">
+        <a href="https://google.com" target="_blank" class="quick-cmd"><span class="qicon">🔍</span>Google</a>
+        <a href="https://duckduckgo.com" target="_blank" class="quick-cmd"><span class="qicon">🦆</span>DuckDuckGo</a>
+        <a href="https://bing.com" target="_blank" class="quick-cmd"><span class="qicon">🌀</span>Bing</a>
+        <a href="https://reddit.com/search" target="_blank" class="quick-cmd"><span class="qicon">🟠</span>Reddit Search</a>
+        <a href="https://youtube.com" target="_blank" class="quick-cmd"><span class="qicon">▶</span>YouTube Search</a>
+        <a href="https://archive.org" target="_blank" class="quick-cmd"><span class="qicon">📦</span>Internet Archive</a>
+        <a href="https://wolframalpha.com" target="_blank" class="quick-cmd"><span class="qicon">🧮</span>Wolfram Alpha</a>
+      </div>
+    `;
+  } else if(cat === 'gaming') {
+    label.innerHTML = 'GAMING DATABASES';
+    content.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:0.4rem;font-size:0.72rem;">
+        <a href="https://ign.com" target="_blank" class="quick-cmd"><span class="qicon">🎮</span>IGN</a>
+        <a href="https://gamespot.com" target="_blank" class="quick-cmd"><span class="qicon">🕹️</span>GameSpot</a>
+        <a href="https://fandom.com" target="_blank" class="quick-cmd"><span class="qicon">📖</span>Fandom Wikis</a>
+        <a href="https://gamefaqs.gamespot.com" target="_blank" class="quick-cmd"><span class="qicon">📋</span>GameFAQs</a>
+        <a href="https://metacritic.com" target="_blank" class="quick-cmd"><span class="qicon">⭐</span>Metacritic</a>
+        <a href="https://store.steampowered.com" target="_blank" class="quick-cmd"><span class="qicon">💨</span>Steam</a>
+        <a href="https://howlongtobeat.com" target="_blank" class="quick-cmd"><span class="qicon">⏱️</span>HowLongToBeat</a>
+      </div>
+    `;
+  } else if(cat === 'health') {
+    label.innerHTML = 'MEDICAL RESOURCES';
+    content.innerHTML = `
+      <div style="display:flex;flex-direction:column;gap:0.4rem;font-size:0.72rem;">
+        <a href="https://mayoclinic.org" target="_blank" class="quick-cmd"><span class="qicon">🏥</span>Mayo Clinic</a>
+        <a href="https://webmd.com" target="_blank" class="quick-cmd"><span class="qicon">💊</span>WebMD</a>
+        <a href="https://healthline.com" target="_blank" class="quick-cmd"><span class="qicon">❤️</span>Healthline</a>
+        <a href="https://medlineplus.gov" target="_blank" class="quick-cmd"><span class="qicon">🔬</span>MedlinePlus</a>
+        <a href="https://cdc.gov" target="_blank" class="quick-cmd"><span class="qicon">🧬</span>CDC.gov</a>
+        <a href="https://nhs.uk" target="_blank" class="quick-cmd"><span class="qicon">🇬🇧</span>NHS UK</a>
+      </div>
+      <div style="margin-top:0.6rem;padding:0.5rem;background:rgba(255,136,0,0.08);border:1px solid rgba(255,136,0,0.2);border-radius:3px;font-family:'Share Tech Mono',monospace;font-size:0.58rem;color:rgba(255,136,0,0.8);line-height:1.5;">⚠ DISCLAIMER: Information provided is for educational purposes only. Always consult a qualified medical professional for actual medical advice.</div>
+    `;
+  }
+}
+
+// ============================================================
+// TICK MARKS
+// ============================================================
 (()=>{const w=document.getElementById('tickWrap');for(let i=0;i<72;i++){const t=document.createElement('div');t.className='tick'+(i%6===0?' major':'');t.style.transform=`rotate(${i*5}deg) translateX(-50%)`;w.appendChild(t);}})();
 
 // Waveform
 const waveformEl=document.getElementById('waveform');
 for(let i=0;i<44;i++){const b=document.createElement('div');b.className='wave-bar';waveformEl.appendChild(b);}
-function animateWave(on){waveformEl.querySelectorAll('.wave-bar').forEach(b=>{if(on){b.style.height=(3+Math.random()*32)+'px';b.classList.add('active');}else{b.style.height='3px';b.classList.remove('active');}});}
+function animateWave(on){waveformEl.querySelectorAll('.wave-bar').forEach(b=>{if(on){b.style.height=(3+Math.random()*22)+'px';b.classList.add('active');}else{b.style.height='3px';b.classList.remove('active');}});}
 let waveInt=null;
 function startWave(){if(!waveInt)waveInt=setInterval(()=>animateWave(true),80);}
 function stopWave(){clearInterval(waveInt);waveInt=null;animateWave(false);}
@@ -398,7 +766,7 @@ function stopWave(){clearInterval(waveInt);waveInt=null;animateWave(false);}
 // Voice bars
 const vBarsEl=document.getElementById('voiceBars');
 for(let i=0;i<28;i++){const b=document.createElement('div');b.className='vbar';vBarsEl.appendChild(b);}
-function animateVBars(on){vBarsEl.querySelectorAll('.vbar').forEach(b=>{b.style.height=(on?(6+Math.random()*50):(2+Math.random()*6))+'px';b.style.opacity=on?'0.9':'0.2';});}
+function animateVBars(on){vBarsEl.querySelectorAll('.vbar').forEach(b=>{b.style.height=(on?(6+Math.random()*40):(2+Math.random()*5))+'px';b.style.opacity=on?'0.9':'0.2';});}
 let vbarInt=null;
 function startVBars(){if(!vbarInt)vbarInt=setInterval(()=>animateVBars(true),75);}
 function stopVBars(){clearInterval(vbarInt);vbarInt=null;animateVBars(false);}
@@ -454,24 +822,24 @@ const MEM_KEY='jarvis_memories_v3';
 function loadMemories(){try{return JSON.parse(localStorage.getItem(MEM_KEY))||[];}catch{return[];}}
 function saveMemoriesToStorage(m){localStorage.setItem(MEM_KEY,JSON.stringify(m));}
 function saveMemory(){
-  const inp=document.getElementById('memInput'),text=inp.value.trim();if(!text)return;
+  const inp=document.getElementById('memInput');if(!inp)return;
+  const text=inp.value.trim();if(!text)return;
   const l=text.toLowerCase();let cat='general';
   if(/my name|i am|i like|i live|my |i'm |im /.test(l))cat='personal';
   else if(/todo|task|remind|need to|must|deadline|meeting/.test(l))cat='task';
   else if(/fact|note|remember that|always|never/.test(l))cat='fact';
   const mems=loadMemories();mems.unshift({id:Date.now(),text,cat,ts:new Date().toISOString(),tsLabel:new Date().toLocaleString()});
   saveMemoriesToStorage(mems);inp.value='';renderMemories();
-  showNotif(`Memory saved: "${text.slice(0,40)}${text.length>40?'...':''}"`, 'hud3');
-  speak("Memory stored, sir.");
+  showNotif(`Memory saved.`,'hud3');speak("Memory stored, sir.");
 }
-function deleteMemory(id){saveMemoriesToStorage(loadMemories().filter(m=>m.id!==id));renderMemories();showNotif('Memory deleted.','orange');}
-function clearAllMemories(){if(!confirm('Wipe ALL memories from JARVIS?'))return;localStorage.removeItem(MEM_KEY);renderMemories();showNotif('All memories wiped, sir.','red');speak('All memories wiped, sir.');}
+function deleteMemory(id){saveMemoriesToStorage(loadMemories().filter(m=>m.id!==id));renderMemories();}
+function clearAllMemories(){if(!confirm('Wipe ALL memories?'))return;localStorage.removeItem(MEM_KEY);renderMemories();speak('All memories wiped, sir.');}
 function filterMemories(cat,btn){currentMemFilter=cat;document.querySelectorAll('.mem-tab').forEach(t=>t.classList.remove('active'));btn.classList.add('active');renderMemories();}
 function renderMemories(){
   const mems=loadMemories(),filtered=currentMemFilter==='all'?mems:mems.filter(m=>m.cat===currentMemFilter);
-  document.getElementById('mem-count').textContent=mems.length+' STORED';
-  const list=document.getElementById('memory-list');
-  if(!filtered.length){list.innerHTML=`<div style="color:var(--text2);font-size:0.72rem;font-family:'Share Tech Mono',monospace;padding:0.5rem;opacity:0.5;">No memories in this category.</div>`;return;}
+  const countEl=document.getElementById('mem-count');if(countEl)countEl.textContent=mems.length+' STORED';
+  const list=document.getElementById('memory-list');if(!list)return;
+  if(!filtered.length){list.innerHTML=`<div style="color:var(--text2);font-size:0.72rem;font-family:'Share Tech Mono',monospace;padding:0.5rem;opacity:0.5;">No memories stored.</div>`;return;}
   list.innerHTML=filtered.map(m=>`<div class="memory-item" style="display:flex;align-items:flex-start;gap:4px;"><div style="flex:1;"><span class="mem-cat-badge cat-${m.cat}">${m.cat.toUpperCase()}</span>${escHtml(m.text)}<span class="memory-time">${m.tsLabel}</span></div><button class="mem-delete-btn" onclick="deleteMemory(${m.id})">✕</button></div>`).join('');
 }
 function getMemoriesAsContext(){const m=loadMemories();if(!m.length)return'';return'\n\nMemory Vault:\n'+m.slice(0,25).map(x=>`- [${x.cat.toUpperCase()}] ${x.text}`).join('\n');}
@@ -517,7 +885,7 @@ async function openWebsite(cmd){
 // Image gen detection
 function isImageGenRequest(t){return /\b(generate|create|draw|make|render|show me|paint|produce|design)\s+(an?\s+)?(image|picture|photo|illustration|artwork|painting|sketch|portrait|scene|visual)\b/i.test(t)||/\b(generate|create|draw|make|render|paint)\b.*\b(of|showing|depicting|with)\b/i.test(t)||/^image of /i.test(t)||/^draw /i.test(t);}
 
-// OpenAI image features
+// OpenAI
 async function generateImage(prompt,key){const r=await fetch('https://api.openai.com/v1/images/generations',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'dall-e-3',prompt,n:1,size:'1024x1024',quality:'standard'})});const d=await r.json();if(d.error)throw new Error(d.error.message);return d.data[0].url;}
 async function analyzeImage(b64,q,key){const base64=b64.split(',')[1],mime=(b64.match(/data:([^;]+);/)||[])[1]||'image/jpeg';const r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'gpt-4o',max_tokens:300,messages:[{role:'user',content:[{type:'image_url',image_url:{url:`data:${mime};base64,${base64}`,detail:'auto'}},{type:'text',text:`You are J.A.R.V.I.S., Tony Stark's AI. Analyze this image for: "${q||'Describe it.'}". 2-3 sentences, spoken-word style, dry British wit, address user as "sir".`}]}]})});const d=await r.json();if(d.error)throw new Error(d.error.message);return d.choices[0].message.content;}
 
@@ -529,45 +897,41 @@ async function sendMessage(text){
   document.getElementById('textInput').value='';
   totalOps++;
   const imgToProcess=attachedImageBase64,imgName=attachedImageName;
-
   const chatArea=document.getElementById('chatArea');
   const userDiv=document.createElement('div');userDiv.className='msg user';
-  userDiv.innerHTML=`<span class="msg-label">▸ YOU</span><span class="msg-text">${escHtml(text)}</span>`;
+  userDiv.innerHTML=`<span class="msg-label">▸ YOU [${currentCat.toUpperCase()}]</span><span class="msg-text">${escHtml(text)}</span>`;
   if(imgToProcess){const wrap=document.createElement('div');wrap.className='msg-img-wrap';wrap.setAttribute('data-label','◈ ATTACHED · '+imgName.toUpperCase());const img=document.createElement('img');img.src=imgToProcess;wrap.appendChild(img);userDiv.appendChild(wrap);}
   chatArea.appendChild(userDiv);chatArea.scrollTop=chatArea.scrollHeight;
   if(imgToProcess)clearAttachedImage();
-
   saveHistoryItem('user',text);
   conversationHistory.push({role:'user',content:text});
   isThinking=true;showTyping();setArcState('thinking');
 
   // Auto-remember
   for(const pat of[/^(?:please\s+)?remember\s+(?:that\s+)?(.+)/i,/^(?:please\s+)?save\s+(?:to\s+memory\s*)?[:\-]?\s*(.+)/i,/^don'?t forget\s+(?:that\s+)?(.+)/i]){
-    const m=text.match(pat);if(m){const t=m[1].trim(),l=t.toLowerCase();let cat='general';if(/my name|i am|i like|i live|my |i'm /.test(l))cat='personal';else if(/task|todo|remind|need to|must|deadline/.test(l))cat='task';else if(/fact|note|always|never|important/.test(l))cat='fact';const mems=loadMemories();mems.unshift({id:Date.now(),text:t,cat,ts:new Date().toISOString(),tsLabel:new Date().toLocaleString()});saveMemoriesToStorage(mems);renderMemories();showNotif(`Saved: "${t.slice(0,38)}"`,'hud3');break;}
+    const m=text.match(pat);if(m){const t=m[1].trim(),l=t.toLowerCase();let cat='general';if(/my name|i am|i like|i live|my |i'm /.test(l))cat='personal';else if(/task|todo|remind|need to|must|deadline/.test(l))cat='task';else if(/fact|note|always|never|important/.test(l))cat='fact';const mems=loadMemories();mems.unshift({id:Date.now(),text:t,cat,ts:new Date().toISOString(),tsLabel:new Date().toLocaleString()});saveMemoriesToStorage(mems);renderMemories();showNotif(`Saved to memory`,'hud3');break;}
   }
 
   const openaiKey=localStorage.getItem('jarvis_openai_key');
   const COHERE_KEY='pF7g391WplP4RL20bg4JSP4jE9OLLLviaHSeVtvK';
 
   try{
-    // CASE 1: Image analysis
+    // Image analysis
     if(imgToProcess){
       if(!openaiKey){removeTyping();isThinking=false;setArcState('standby');addMsg('system','OpenAI API key required for image analysis. Click 🔑 OPENAI KEY.');showApiKeyModal();return;}
       const analysis=await analyzeImage(imgToProcess,text,openaiKey);
       removeTyping();conversationHistory.push({role:'assistant',content:analysis});if(conversationHistory.length>20)conversationHistory=conversationHistory.slice(-20);
       addMsg('jarvis',analysis);saveHistoryItem('jarvis',analysis);isThinking=false;setArcState('standby');if(autoSpeak)speak(analysis);return;
     }
-
-    // CASE 2: Music
-    const musicCmd=detectMusicCmd(text);
-    if(musicCmd){const reply=await openWebsite(musicCmd);removeTyping();addMsg('jarvis',reply);saveHistoryItem('jarvis',reply);conversationHistory.push({role:'assistant',content:reply});isThinking=false;setArcState('standby');if(autoSpeak)speak(reply);return;}
-
-    // CASE 3: Website
-    const webCmd=detectWebCmd(text);
-    if(webCmd){const reply=await openWebsite(webCmd);removeTyping();addMsg('jarvis',reply);saveHistoryItem('jarvis',reply);conversationHistory.push({role:'assistant',content:reply});isThinking=false;setArcState('standby');if(autoSpeak)speak(reply);return;}
-
-    // CASE 4: Image generation
-    if(isImageGenRequest(text)){
+    // Music (general only)
+    if(currentCat==='general'||currentCat==='find'){
+      const musicCmd=detectMusicCmd(text);
+      if(musicCmd){const reply=await openWebsite(musicCmd);removeTyping();addMsg('jarvis',reply);saveHistoryItem('jarvis',reply);conversationHistory.push({role:'assistant',content:reply});isThinking=false;setArcState('standby');if(autoSpeak)speak(reply);return;}
+      const webCmd=detectWebCmd(text);
+      if(webCmd){const reply=await openWebsite(webCmd);removeTyping();addMsg('jarvis',reply);saveHistoryItem('jarvis',reply);conversationHistory.push({role:'assistant',content:reply});isThinking=false;setArcState('standby');if(autoSpeak)speak(reply);return;}
+    }
+    // Image generation (general only)
+    if(currentCat==='general'&&isImageGenRequest(text)){
       if(!openaiKey){removeTyping();isThinking=false;setArcState('standby');addMsg('system','OpenAI API key required for image generation. Click 🔑 OPENAI KEY.');showApiKeyModal();return;}
       setArcState('imaging');
       let imgPrompt=text.replace(/^(please\s+)?(generate|create|draw|make|render|show me|paint|produce|design)\s+(an?\s+)?(image|picture|photo|illustration|artwork|painting|sketch|portrait|scene|visual)?\s*(of\s+)?/i,'').replace(/^(please\s+)?/i,'').trim()||text;
@@ -589,47 +953,72 @@ async function sendMessage(text){
       return;
     }
 
-    // CASE 5: Cohere AI chat
+    // FIND MODULE — add search links in response
+    const isFindCat = currentCat === 'find';
+
+    // HEALTH MODULE — special symptom detection
+    const isHealthCat = currentCat === 'health';
+
+    // Cohere AI chat with category-specific system prompt
     const memCtx=getMemoriesAsContext();
-    const systemPrompt=`You are J.A.R.V.I.S. (Just A Rather Very Intelligent System), Tony Stark's AI. Speak like Paul Bettany's JARVIS: calm, precise, dry British wit, slightly formal but warm. Keep ALL responses to 1-3 short spoken sentences. No bullet points, no markdown, no lists. Write for speech. Use natural contractions. Call the user "sir" occasionally. Never break character.${memCtx}`;
+    const catSystemPrompt=CAT_CONFIG[currentCat].systemPrompt;
+    const systemPrompt=catSystemPrompt+(memCtx?memCtx:'');
     const chatHistory=conversationHistory.slice(0,-1).map(m=>({role:m.role==='user'?'USER':'CHATBOT',message:m.content}));
     const lastMsg=conversationHistory[conversationHistory.length-1].content;
 
-    // Try command-r-plus first, fallback to command-light (free tier)
-    let res=await fetch('https://api.cohere.ai/v1/chat',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+COHERE_KEY},body:JSON.stringify({model:'command-r-plus-08-2024',message:lastMsg,chat_history:chatHistory,preamble:systemPrompt,max_tokens:250,temperature:0.72})});
+    let res=await fetch('https://api.cohere.ai/v1/chat',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+COHERE_KEY},body:JSON.stringify({model:'command-r-plus-08-2024',message:lastMsg,chat_history:chatHistory,preamble:systemPrompt,max_tokens:600,temperature:0.72})});
     if(res.status===429||res.status===402||res.status===403){
-      // Fallback to lighter model
-      res=await fetch('https://api.cohere.ai/v1/chat',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+COHERE_KEY},body:JSON.stringify({model:'command-light',message:lastMsg,chat_history:chatHistory,preamble:systemPrompt,max_tokens:250,temperature:0.72})});
+      res=await fetch('https://api.cohere.ai/v1/chat',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+COHERE_KEY},body:JSON.stringify({model:'command-light',message:lastMsg,chat_history:chatHistory,preamble:systemPrompt,max_tokens:500,temperature:0.72})});
     }
 
     const data=await res.json();removeTyping();
     if(data.text){
-      // Strip any markdown the model might output
-      const reply=data.text.replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1').replace(/#{1,6}\s/g,'').replace(/\n{2,}/g,' ').trim();
+      let reply=data.text.replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1').replace(/#{1,6}\s/g,'').trim();
       conversationHistory.push({role:'assistant',content:reply});if(conversationHistory.length>20)conversationHistory=conversationHistory.slice(-20);
-      addMsg('jarvis',reply);saveHistoryItem('jarvis',reply);isThinking=false;setArcState('standby');if(autoSpeak)speak(reply);
+
+      const msgDiv=document.createElement('div');msgDiv.className='msg jarvis';
+      const catColor=CAT_CONFIG[currentCat].color;
+      msgDiv.innerHTML=`<span class="msg-label" style="color:${catColor};">▸ J.A.R.V.I.S [${currentCat.toUpperCase()}]</span>`;
+
+      // Render reply — for coding, try to detect code blocks
+      if(currentCat==='coding'){
+        const rendered=reply.replace(/```(\w*)\n?([\s\S]*?)```/g,(_,lang,code)=>`</span><pre>${escHtml(code.trim())}</pre><span class="msg-text">`);
+        const textSpan=document.createElement('span');textSpan.className='msg-text';textSpan.innerHTML=rendered.replace(/\n/g,'<br>');msgDiv.appendChild(textSpan);
+      } else if(currentCat==='health'){
+        // Add disclaimer card
+        const textSpan=document.createElement('span');textSpan.className='msg-text';textSpan.textContent=reply;msgDiv.appendChild(textSpan);
+        const disc=document.createElement('div');disc.className='health-warning';disc.textContent='⚠ MEDICAL DISCLAIMER: This is informational only. Always consult a qualified doctor for actual diagnosis and treatment.';msgDiv.appendChild(disc);
+      } else if(currentCat==='find'){
+        // Parse URLs and make them clickable
+        const urlRegex=/(https?:\/\/[^\s]+)/g;
+        const htmlReply=escHtml(reply).replace(urlRegex,(url)=>`<a href="${url}" target="_blank" style="color:var(--cat-find);text-decoration:underline;">${url}</a>`);
+        const textSpan=document.createElement('span');textSpan.className='msg-text';textSpan.innerHTML=htmlReply.replace(/\n/g,'<br>');msgDiv.appendChild(textSpan);
+      } else {
+        const textSpan=document.createElement('span');textSpan.className='msg-text';textSpan.textContent=reply;msgDiv.appendChild(textSpan);
+      }
+
+      chatArea.appendChild(msgDiv);chatArea.scrollTop=chatArea.scrollHeight;
+      saveHistoryItem('jarvis',reply);isThinking=false;setArcState('standby');
+      // Strip code for speech
+      const speechText=reply.replace(/```[\s\S]*?```/g,'[code block]').replace(/\n/g,' ').slice(0,400);
+      if(autoSpeak)speak(speechText);
     }else{
       const errMsg=data.message||JSON.stringify(data);
-      // Check if it's a quota/billing issue
-      if(errMsg.includes('quota')||errMsg.includes('billing')||errMsg.includes('exceeded')||errMsg.includes('plan')){
-        throw new Error('QUOTA_EXCEEDED');
-      }
+      if(errMsg.includes('quota')||errMsg.includes('billing')||errMsg.includes('exceeded')||errMsg.includes('plan')){throw new Error('QUOTA_EXCEEDED');}
       throw new Error(errMsg);
     }
 
   }catch(err){
     removeTyping();isThinking=false;setArcState('standby');
-    if(err.message==='QUOTA_EXCEEDED'||err.message.includes('quota')||err.message.includes('billing')||err.message.includes('exceeded')){
-      addMsg('system','⚠ COHERE API QUOTA EXCEEDED — The trial key has run out of credits. Visit cohere.com/api-keys for a new free key.');
-      addMsg('jarvis','My Cohere quota has been exhausted, sir. You will need to obtain a new free API key from cohere.com to restore chat functionality.');
-      if(autoSpeak)speak('My Cohere quota has been exhausted, sir. A new API key is required.');
+    if(err.message==='QUOTA_EXCEEDED'||err.message.includes('quota')||err.message.includes('billing')){
+      addMsg('system','⚠ COHERE API QUOTA EXCEEDED — Visit cohere.com/api-keys for a new free key.');
+      addMsg('jarvis','My Cohere quota has been exhausted, sir. A new API key is required.');
+      if(autoSpeak)speak('My Cohere quota has been exhausted, sir.');
     } else if(err.message.includes('rate')){
-      addMsg('system','RATE LIMITED — Please wait 30 seconds before trying again.');
-      addMsg('jarvis','The rate limit has been reached, sir. Please allow a brief pause before your next query.');
-      if(autoSpeak)speak('Rate limit reached, sir. Please wait a moment.');
+      addMsg('system','RATE LIMITED — Please wait before trying again.');
     } else {
       addMsg('system','ERROR: '+err.message);
-      addMsg('jarvis','I encountered a connectivity issue, sir. '+err.message.slice(0,60));
+      addMsg('jarvis','I encountered a connectivity issue, sir.');
       if(autoSpeak)speak('I encountered a connectivity issue, sir.');
     }
     console.error('JARVIS error:',err);
@@ -640,137 +1029,86 @@ function sendText(){const v=document.getElementById('textInput').value.trim();if
 function quickCmd(cmd){document.getElementById('textInput').value=cmd;sendMessage(cmd);}
 
 // Chat UI helpers
-function addMsg(type,text){const a=document.getElementById('chatArea');const d=document.createElement('div');d.className='msg '+type;const l=type==='user'?'▸ YOU':type==='jarvis'?'▸ J.A.R.V.I.S':'▸ SYSTEM';d.innerHTML=`<span class="msg-label">${l}</span><span class="msg-text">${escHtml(text)}</span>`;a.appendChild(d);a.scrollTop=a.scrollHeight;}
-function showTyping(){const a=document.getElementById('chatArea');const d=document.createElement('div');d.id='typing-indicator';d.className='msg jarvis';d.innerHTML=`<span class="msg-label">▸ J.A.R.V.I.S PROCESSING</span><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;a.appendChild(d);a.scrollTop=a.scrollHeight;}
+function addMsg(type,text,color){const a=document.getElementById('chatArea');const d=document.createElement('div');d.className='msg '+type;const l=type==='user'?`▸ YOU [${currentCat.toUpperCase()}]`:type==='jarvis'?`▸ J.A.R.V.I.S [${currentCat.toUpperCase()}]`:'▸ SYSTEM';const c=color||(type==='jarvis'?CAT_CONFIG[currentCat].color:undefined);d.innerHTML=`<span class="msg-label"${c?` style="color:${c};"`:''} >${l}</span><span class="msg-text">${escHtml(text)}</span>`;a.appendChild(d);a.scrollTop=a.scrollHeight;}
+function showTyping(){const a=document.getElementById('chatArea');const d=document.createElement('div');d.id='typing-indicator';d.className='msg jarvis';d.innerHTML=`<span class="msg-label">▸ J.A.R.V.I.S PROCESSING [${currentCat.toUpperCase()}]</span><div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;a.appendChild(d);a.scrollTop=a.scrollHeight;}
 function removeTyping(){const t=document.getElementById('typing-indicator');if(t)t.remove();}
-function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
+function escHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');}
 function clearChat(){document.getElementById('chatArea').innerHTML='';conversationHistory=[];addMsg('system','Conversation log cleared. Memory vault retained.');speak('Conversation log cleared, sir.');}
 
 // ============================================================
-// JARVIS VOICE ENGINE
-// Smart voice scoring — prioritises British Neural voices like Paul Bettany
+// VOICE ENGINE
 // ============================================================
 function scoreVoice(v){
-  const n=v.name.toLowerCase(),l=(v.lang||'').toLowerCase();
-  let s=0;
+  const n=v.name.toLowerCase(),l=(v.lang||'').toLowerCase();let s=0;
   if(l.includes('en-gb')||l.includes('en_gb'))s+=50;
   if(n.includes('natural')||n.includes('neural')||n.includes('online'))s+=40;
-  if(n.includes('ryan'))s+=35;
-  if(n.includes('george')||n.includes('arthur'))s+=28;
-  if(n.includes('google uk')||n.includes('google english'))s+=22;
-  if(n.includes('daniel')||n.includes('oliver'))s+=18;
-  if(n.includes('james')||n.includes('mark')||n.includes('david'))s+=12;
-  if(l.startsWith('en'))s+=8;
+  if(n.includes('ryan'))s+=35;if(n.includes('george')||n.includes('arthur'))s+=28;
+  if(n.includes('google uk')||n.includes('google english'))s+=22;if(n.includes('daniel')||n.includes('oliver'))s+=18;
+  if(n.includes('james')||n.includes('mark')||n.includes('david'))s+=12;if(l.startsWith('en'))s+=8;
   if(/zira|susan|hazel|fiona|samantha|karen|victoria|moira|female|woman/.test(n))s-=25;
   return s;
 }
-
 function initVoices(){
-  const voices=window.speechSynthesis.getVoices();
-  if(!voices.length){setTimeout(initVoices,200);return;}
+  const voices=window.speechSynthesis.getVoices();if(!voices.length){setTimeout(initVoices,200);return;}
   allVoices=voices;
   const sel=document.getElementById('voiceSelect');sel.innerHTML='';
-  const eng=voices.filter(v=>(v.lang||'').startsWith('en'));
-  const pool=eng.length?eng:voices;
+  const eng=voices.filter(v=>(v.lang||'').startsWith('en'));const pool=eng.length?eng:voices;
   const sorted=[...pool].sort((a,b)=>scoreVoice(b)-scoreVoice(a));
-  sorted.forEach(v=>{
-    const o=document.createElement('option');o.value=v.name;
-    const brit=v.lang.includes('GB')||v.lang.includes('gb');
-    o.textContent=(brit?'🇬🇧 ':'')+v.name+(v.lang?` (${v.lang})`:'');
-    sel.appendChild(o);
-  });
-  if(sorted.length){
-    selectedVoice=sorted[0];sel.value=sorted[0].name;
-    const brit=sorted[0].lang.includes('GB');
-    showNotif(`Voice: ${sorted[0].name.slice(0,24)} ${brit?'🇬🇧':''}`,brit?'hud3':'hud');
-  }
-  document.getElementById('speech-stat').textContent='READY';
-  document.getElementById('speech-stat').style.color='var(--hud3)';
-  document.getElementById('speech-bar').style.width='100%';
+  sorted.forEach(v=>{const o=document.createElement('option');o.value=v.name;const brit=v.lang.includes('GB')||v.lang.includes('gb');o.textContent=(brit?'🇬🇧 ':'')+v.name+(v.lang?` (${v.lang})`:'');sel.appendChild(o);});
+  if(sorted.length){selectedVoice=sorted[0];sel.value=sorted[0].name;}
+  document.getElementById('speech-stat').textContent='READY';document.getElementById('speech-stat').style.color='var(--hud3)';document.getElementById('speech-bar').style.width='100%';
 }
-window.speechSynthesis.onvoiceschanged=initVoices;
-setTimeout(initVoices,300);
-
+window.speechSynthesis.onvoiceschanged=initVoices;setTimeout(initVoices,300);
 function onVoiceChange(){const name=document.getElementById('voiceSelect').value;const v=allVoices.find(x=>x.name===name);if(v)selectedVoice=v;}
 function updateVoiceSettings(){const r=document.getElementById('rateSlider').value,p=document.getElementById('pitchSlider').value;document.getElementById('rate-label').textContent=r+'x';document.getElementById('pitch-label').textContent=p;document.getElementById('voice-rate').textContent=r+'x';}
-
-// Pre-process text for more natural JARVIS speech
-function cleanForSpeech(text){
-  return text
-    .replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1').replace(/`(.+?)`/g,'$1').replace(/#{1,6}\s/g,'')
-    .replace(/\bJ\.A\.R\.V\.I\.S\.?\b/gi,'Jarvis')
-    .replace(/\bAI\b/g,'A.I.').replace(/\bAPI\b/g,'A.P.I.').replace(/\bURL\b/g,'the link')
-    .replace(/https?:\/\/\S+/g,'').replace(/\n+/g,' ').replace(/\s{2,}/g,' ').trim();
-}
-
-// Sentence-chunked speech — fixes Chrome 200-char cutoff bug and sounds more natural
+function cleanForSpeech(text){return text.replace(/\*\*(.+?)\*\*/g,'$1').replace(/\*(.+?)\*/g,'$1').replace(/`(.+?)`/g,'$1').replace(/#{1,6}\s/g,'').replace(/\bJ\.A\.R\.V\.I\.S\.?\b/gi,'Jarvis').replace(/\bAI\b/g,'A.I.').replace(/https?:\/\/\S+/g,'').replace(/\n+/g,' ').replace(/\s{2,}/g,' ').trim();}
 function speak(text){
   if(!text||!autoSpeak)return;
   window.speechSynthesis.cancel();
   const cleaned=cleanForSpeech(text);
   const sentences=cleaned.match(/[^.!?…]+[.!?…]+|[^.!?…]+$/g)||[cleaned];
   let idx=0;
-  function next(){
-    if(idx>=sentences.length){isSpeaking=false;setArcState('standby');stopVBars();return;}
-    const chunk=sentences[idx].trim();if(!chunk){idx++;next();return;}
-    const utt=new SpeechSynthesisUtterance(chunk);
-    const selName=document.getElementById('voiceSelect').value;
-    const v=allVoices.find(x=>x.name===selName)||selectedVoice;
-    if(v)utt.voice=v;
-    utt.rate=parseFloat(document.getElementById('rateSlider').value);
-    utt.pitch=parseFloat(document.getElementById('pitchSlider').value);
-    utt.volume=1;
-    if(idx===0){utt.onstart=()=>{isSpeaking=true;setArcState('speaking');startVBars();};}
-    utt.onend=()=>{idx++;next();};
-    utt.onerror=()=>{idx++;next();};
-    window.speechSynthesis.speak(utt);
-  }
+  function next(){if(idx>=sentences.length){isSpeaking=false;setArcState('standby');stopVBars();return;}const chunk=sentences[idx].trim();if(!chunk){idx++;next();return;}const utt=new SpeechSynthesisUtterance(chunk);const selName=document.getElementById('voiceSelect').value;const v=allVoices.find(x=>x.name===selName)||selectedVoice;if(v)utt.voice=v;utt.rate=parseFloat(document.getElementById('rateSlider').value);utt.pitch=parseFloat(document.getElementById('pitchSlider').value);utt.volume=1;if(idx===0){utt.onstart=()=>{isSpeaking=true;setArcState('speaking');startVBars();};}utt.onend=()=>{idx++;next();};utt.onerror=()=>{idx++;next();};window.speechSynthesis.speak(utt);}
   next();
 }
-
-function testVoice(){speak("All systems are fully operational, sir. I've completed a diagnostic — everything is running within normal parameters. Shall I prepare a status report, or is there something more pressing on your agenda?");}
+function testVoice(){speak("All systems are fully operational, sir. I've completed a diagnostic. Shall I prepare a status report?");}
 
 // Speech recognition
 function initRecognition(){
-  if(!('webkitSpeechRecognition'in window)&&!('SpeechRecognition'in window)){showNotif('Speech recognition not supported in this browser.','red');return;}
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  recognition=new SR();recognition.continuous=false;recognition.interimResults=true;recognition.lang='en-US';
-  recognition.onstart=()=>{isListening=true;setArcState('listening');document.getElementById('voiceBtn').classList.add('active');document.getElementById('voiceBtn').textContent='🎤 STOP';document.getElementById('rec-accuracy').textContent='--';};
+  if(!('webkitSpeechRecognition'in window)&&!('SpeechRecognition'in window)){return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;recognition=new SR();recognition.continuous=false;recognition.interimResults=true;recognition.lang='en-US';
+  recognition.onstart=()=>{isListening=true;setArcState('listening');document.getElementById('voiceBtn').classList.add('active');document.getElementById('voiceBtn').textContent='🎤 STOP';};
   recognition.onresult=(e)=>{let interim='',final='';for(let i=e.resultIndex;i<e.results.length;i++){const t=e.results[i][0].transcript;if(e.results[i].isFinal)final+=t;else interim+=t;}const conf=e.results[e.results.length-1][0].confidence;if(conf)document.getElementById('rec-accuracy').textContent=(conf*100).toFixed(0)+'%';if(final){document.getElementById('textInput').value=final;sendMessage(final);}else if(interim){document.getElementById('textInput').value=interim+'...';}};
   recognition.onend=()=>{isListening=false;document.getElementById('voiceBtn').classList.remove('active');document.getElementById('voiceBtn').textContent='🎤 VOICE';if(!isThinking)setArcState('standby');stopWave();};
   recognition.onerror=(e)=>{isListening=false;document.getElementById('voiceBtn').classList.remove('active');document.getElementById('voiceBtn').textContent='🎤 VOICE';setArcState('standby');stopWave();if(e.error!=='no-speech')showNotif('Voice error: '+e.error,'red');};
 }
 initRecognition();
 function toggleListen(){if(!recognition){showNotif('Speech recognition unavailable.','red');return;}if(isListening){recognition.stop();}else{if(isSpeaking){window.speechSynthesis.cancel();isSpeaking=false;stopVBars();}try{recognition.start();}catch(e){console.log(e);}}}
-
 function toggleAutoSpeak(){autoSpeak=!autoSpeak;document.getElementById('autoSpeakBtn').textContent=`🔊 AUTO-SPEAK: ${autoSpeak?'ON':'OFF'}`;if(!autoSpeak)window.speechSynthesis.cancel();}
 function emergencyStop(){window.speechSynthesis.cancel();if(recognition&&isListening)recognition.stop();isListening=false;isSpeaking=false;isThinking=false;setArcState('standby');stopWave();stopVBars();removeTyping();document.getElementById('launchOverlay').classList.remove('visible');const p=document.getElementById('img-gen-progress');if(p)p.remove();showNotif('EMERGENCY STOP. All processes halted.','red');}
-
 function showNotif(msg,color='hud'){const c=document.getElementById('notif');const d=document.createElement('div');d.className='notif-item';d.style.borderLeftColor=`var(--${color})`;d.textContent='▸ '+msg;c.appendChild(d);setTimeout(()=>{d.style.opacity='0';d.style.transition='opacity 0.4s';setTimeout(()=>d.remove(),400);},3500);}
-
-function showApiKeyModal(){document.getElementById('apiModal').classList.add('visible');const k=localStorage.getItem('jarvis_openai_key');const inp=document.getElementById('apiKeyInput'),st=document.getElementById('apiKeyStatus');if(k){inp.value=k;st.innerHTML='✓ Key active — Image features ONLINE.';st.style.color='rgba(0,255,170,0.7)';}else{inp.value='';st.textContent='No key — image features unavailable.';st.style.color='rgba(0,212,255,0.5)';}setTimeout(()=>inp.focus(),100);}
+function showApiKeyModal(){document.getElementById('apiModal').classList.add('visible');const k=localStorage.getItem('jarvis_openai_key');const inp=document.getElementById('apiKeyInput'),st=document.getElementById('apiKeyStatus');if(k){inp.value=k;st.innerHTML='✓ Key active.';st.style.color='rgba(0,255,170,0.7)';}else{inp.value='';st.textContent='No key — image features unavailable.';st.style.color='rgba(0,212,255,0.5)';}setTimeout(()=>inp.focus(),100);}
 function closeApiModal(){document.getElementById('apiModal').classList.remove('visible');}
-function saveApiKey(){const k=document.getElementById('apiKeyInput').value.trim(),s=document.getElementById('apiKeyStatus');if(!k){s.textContent='⚠ Please enter a key.';s.style.color='rgba(255,136,0,0.8)';return;}if(!k.startsWith('sk-')){s.textContent='⚠ Key should start with "sk-".';s.style.color='rgba(255,136,0,0.8)';return;}localStorage.setItem('jarvis_openai_key',k);s.innerHTML='✓ Key saved. Image features ACTIVE.';s.style.color='rgba(0,255,170,0.8)';showNotif('OpenAI key saved. Vision modules online.','hud3');setTimeout(closeApiModal,1200);}
-function clearApiKey(){localStorage.removeItem('jarvis_openai_key');document.getElementById('apiKeyInput').value='';document.getElementById('apiKeyStatus').textContent='Key cleared.';document.getElementById('apiKeyStatus').style.color='rgba(255,51,51,0.7)';showNotif('OpenAI key removed.','red');}
+function saveApiKey(){const k=document.getElementById('apiKeyInput').value.trim(),s=document.getElementById('apiKeyStatus');if(!k){s.textContent='⚠ Please enter a key.';return;}if(!k.startsWith('sk-')){s.textContent='⚠ Key should start with "sk-".';return;}localStorage.setItem('jarvis_openai_key',k);s.innerHTML='✓ Key saved. Image features ACTIVE.';showNotif('OpenAI key saved.','hud3');setTimeout(closeApiModal,1200);}
+function clearApiKey(){localStorage.removeItem('jarvis_openai_key');document.getElementById('apiKeyInput').value='';document.getElementById('apiKeyStatus').textContent='Key cleared.';}
 
 document.addEventListener('keydown',e=>{if(e.key==='Escape')emergencyStop();if(e.key===' '&&e.target===document.body){e.preventDefault();toggleListen();}});
 
-// Boot
-renderMemories();renderHistory();
+// ============================================================
+// BOOT
+// ============================================================
+renderQuickCmds('general');renderCaps('general');renderLeftDynamic('general');renderHistory();
 const savedCount=loadMemories().length,hasKey=!!localStorage.getItem('jarvis_openai_key');
 setTimeout(()=>{
-  showNotif('J.A.R.V.I.S. systems online.','hud3');
-  const boot=savedCount>0
-    ?`Good day, sir. All systems operational. ${savedCount} stored ${savedCount===1?'memory':'memories'} loaded. ${hasKey?'Image systems active.':'Add an OpenAI key for image features.'} How may I assist?`
-    :`Good day, sir. All systems operational. You can say "open YouTube", "play a song", or ask me anything. ${hasKey?'Image features active.':''}`;
+  showNotif('J.A.R.V.I.S. v10.0.0 online. 6 modules loaded.','hud3');
+  const boot=`Good day, sir. All six modules are online: General, Studies, Coding, Find, Gaming, and Health. ${savedCount>0?savedCount+' memories loaded. ':''}${hasKey?'Image systems active. ':''}How may I assist?`;
   addMsg('jarvis',boot);
-  if(autoSpeak)setTimeout(()=>speak('Good day, sir. All systems operational. How may I assist you today?'),800);
+  if(autoSpeak)setTimeout(()=>speak('Good day, sir. All six modules are online. How may I assist you today?'),800);
 },1000);
-setTimeout(()=>showNotif('Tip: "open [site]" · "play [song]" · ask anything','hud'),2200);
-if(hasKey)setTimeout(()=>showNotif('OpenAI key detected — image features active','hud3'),3000);
+setTimeout(()=>showNotif('Select a module tab to switch JARVIS modes','hud'),2200);
 
-console.log('%cJ.A.R.V.I.S.','color:#00d4ff;font-size:28px;font-weight:900;font-family:monospace;');
-console.log('%cv9.0.0 — Cohere AI + JARVIS Voice Engine + Website/Music Launcher','color:#00ffaa;font-size:11px;');
+console.log('%cJ.A.R.V.I.S. v10.0.0','color:#00d4ff;font-size:24px;font-weight:900;font-family:monospace;');
+console.log('%c6 Modules: General · Studies · Coding · Find · Gaming · Health','color:#00ffaa;font-size:11px;');
 </script>
 </body>
 </html>
