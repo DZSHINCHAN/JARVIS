@@ -148,7 +148,7 @@
   .bar-track{height:4px;background:rgba(255,255,255,0.06);border-radius:99px;margin-top:4px;overflow:hidden;}
   .bar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--hud2),var(--hud));position:relative;}
   .bar-fill::after{content:'';position:absolute;right:0;top:0;bottom:0;width:4px;background:white;border-radius:99px;box-shadow:0 0 8px white;}
-  .memory-item{padding:0.4rem 0.6rem;background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.08);border-left:2px solid var(--hud);border-radius:2px;font-size:0.72rem;color:var(--text2);margin-bottom:0.4rem;line-height:1.4;letter-spacing:0.02em;cursor:pointer;transition:background 0.2s;}
+  .memory-item{padding:0.2rem 0.4rem;background:rgba(0,212,255,0.04);border:1px solid rgba(0,212,255,0.08);border-left:2px solid var(--hud);border-radius:2px;font-size:0.66rem;color:var(--text2);margin-bottom:0.2rem;line-height:1.3;letter-spacing:0.02em;cursor:pointer;transition:background 0.2s;}
   .memory-item:hover{background:rgba(0,212,255,0.08);color:var(--text);}
   .memory-time{font-family:'Share Tech Mono',monospace;font-size:0.55rem;color:var(--text2);opacity:0.5;display:block;margin-top:2px;}
   .mem-tab{background:rgba(0,212,255,0.04);border:1px solid var(--border);color:var(--text2);border-radius:3px;padding:0.2rem 0.5rem;font-family:'Share Tech Mono',monospace;font-size:0.58rem;cursor:pointer;letter-spacing:0.08em;transition:all 0.2s;}
@@ -668,18 +668,18 @@ function renderLeftDynamic(cat) {
   if(cat === 'general') {
     label.innerHTML = 'MEMORY VAULT <span id="mem-count" style="color:var(--hud3);margin-left:4px;font-size:0.6rem;">'+loadMemories().length+' STORED</span>';
     content.innerHTML = `
-      <div style="display:flex;gap:0.4rem;margin-bottom:0.6rem;">
-        <input id="memInput" placeholder="Save for JARVIS to remember..." style="flex:1;background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:3px;padding:0.4rem 0.6rem;font-family:'Rajdhani',sans-serif;font-size:0.78rem;color:var(--text);outline:none;" onkeydown="if(event.key==='Enter')saveMemory()">
-        <button class="hud-btn" onclick="saveMemory()" style="padding:0.4rem 0.6rem;font-size:0.65rem;">SAVE</button>
+      <div style="display:flex;gap:0.3rem;margin-bottom:0.4rem;">
+        <input id="memInput" placeholder="Type to remember..." style="flex:1;background:rgba(0,0,0,0.4);border:1px solid var(--border);border-radius:3px;padding:0.3rem 0.5rem;font-family:'Rajdhani',sans-serif;font-size:0.75rem;color:var(--text);outline:none;" onkeydown="if(event.key==='Enter')saveMemory()">
+        <button class="hud-btn" onclick="saveMemory()" style="padding:0.3rem 0.5rem;font-size:0.6rem;">+</button>
       </div>
-      <div style="display:flex;gap:0.3rem;margin-bottom:0.6rem;flex-wrap:wrap;">
-        <button class="mem-tab active" onclick="filterMemories('all',this)">ALL</button>
-        <button class="mem-tab" onclick="filterMemories('personal',this)">PERSONAL</button>
-        <button class="mem-tab" onclick="filterMemories('task',this)">TASKS</button>
-        <button class="mem-tab" onclick="filterMemories('fact',this)">FACTS</button>
+      <div style="display:flex;gap:0.25rem;margin-bottom:0.4rem;">
+        <button class="mem-tab active" onclick="filterMemories('all',this)" style="font-size:0.52rem;padding:0.15rem 0.35rem;">ALL</button>
+        <button class="mem-tab" onclick="filterMemories('personal',this)" style="font-size:0.52rem;padding:0.15rem 0.35rem;">ME</button>
+        <button class="mem-tab" onclick="filterMemories('task',this)" style="font-size:0.52rem;padding:0.15rem 0.35rem;">TASKS</button>
+        <button class="mem-tab" onclick="filterMemories('fact',this)" style="font-size:0.52rem;padding:0.15rem 0.35rem;">FACTS</button>
       </div>
-      <div id="memory-list" style="max-height:140px;overflow-y:auto;"></div>
-      <button class="hud-btn danger" onclick="clearAllMemories()" style="width:100%;margin-top:0.5rem;font-size:0.65rem;">⚠ WIPE ALL MEMORIES</button>
+      <div id="memory-list" style="max-height:90px;overflow-y:auto;"></div>
+      <button class="hud-btn danger" onclick="clearAllMemories()" style="width:100%;margin-top:0.4rem;font-size:0.58rem;padding:0.3rem;">⚠ WIPE ALL</button>
     `;
     renderMemories();
   } else if(cat === 'studies') {
@@ -883,10 +883,49 @@ async function openWebsite(cmd){
 }
 
 // Image gen detection
-function isImageGenRequest(t){return /\b(generate|create|draw|make|render|show me|paint|produce|design)\s+(an?\s+)?(image|picture|photo|illustration|artwork|painting|sketch|portrait|scene|visual)\b/i.test(t)||/\b(generate|create|draw|make|render|paint)\b.*\b(of|showing|depicting|with)\b/i.test(t)||/^image of /i.test(t)||/^draw /i.test(t);}
+function isImageGenRequest(t){
+  const l=t.toLowerCase().trim();
+  if(/\b(generate|create|draw|make|render|show me|paint|produce|design)\s+(an?\s+)?(image|picture|photo|illustration|artwork|painting|sketch|portrait|scene|visual)\b/i.test(t))return true;
+  if(/\b(generate|create|draw|make|render|paint)\b.*\b(of|showing|depicting|with)\b/i.test(t))return true;
+  if(/^(image of|draw |sketch |paint )/i.test(t))return true;
+  if(/\bgen\w{0,6}\s+(an?\s+)?(image|picture|photo|pic|illustration|artwork|sketch)\b/i.test(t))return true;
+  if(/\bcre\w{0,3}\s+(an?\s+)?(image|picture|photo|pic|illustration|artwork|sketch)\b/i.test(t))return true;
+  if(/^(gen|img|pic|image|draw|make)\s+\w/i.test(l))return true;
+  return false;
+}
 
-// OpenAI
-async function generateImage(prompt,key){const r=await fetch('https://api.openai.com/v1/images/generations',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'dall-e-3',prompt,n:1,size:'1024x1024',quality:'standard'})});const d=await r.json();if(d.error)throw new Error(d.error.message);return d.data[0].url;}
+// HuggingFace Image Generation via Inference API
+const HF_KEY='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';
+async function generateImage(prompt){
+  const models=[
+    'black-forest-labs/FLUX.1-schnell',
+    'black-forest-labs/FLUX.1-dev',
+    'stabilityai/stable-diffusion-xl-base-1.0'
+  ];
+  let lastErr='';
+  for(const model of models){
+    try{
+      const r=await fetch(`https://router.huggingface.co/hf-inference/models/${model}`,{
+        method:'POST',
+        headers:{
+          'Authorization':'Bearer '+HF_KEY,
+          'Content-Type':'application/json',
+          'x-wait-for-model':'true'
+        },
+        body:JSON.stringify({inputs:prompt})
+      });
+      if(!r.ok){
+        const txt=await r.text();
+        lastErr=txt;
+        console.warn(`HF model ${model} failed:`,txt);
+        continue;
+      }
+      const blob=await r.blob();
+      return URL.createObjectURL(blob);
+    }catch(e){lastErr=e.message;console.warn(`HF model ${model} error:`,e);}
+  }
+  throw new Error('All HF models failed: '+lastErr.slice(0,80));
+}
 async function analyzeImage(b64,q,key){const base64=b64.split(',')[1],mime=(b64.match(/data:([^;]+);/)||[])[1]||'image/jpeg';const r=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},body:JSON.stringify({model:'gpt-4o',max_tokens:300,messages:[{role:'user',content:[{type:'image_url',image_url:{url:`data:${mime};base64,${base64}`,detail:'auto'}},{type:'text',text:`You are J.A.R.V.I.S., Tony Stark's AI. Analyze this image for: "${q||'Describe it.'}". 2-3 sentences, spoken-word style, dry British wit, address user as "sir".`}]}]})});const d=await r.json();if(d.error)throw new Error(d.error.message);return d.choices[0].message.content;}
 
 // ============================================================
@@ -932,17 +971,16 @@ async function sendMessage(text){
     }
     // Image generation (general only)
     if(currentCat==='general'&&isImageGenRequest(text)){
-      if(!openaiKey){removeTyping();isThinking=false;setArcState('standby');addMsg('system','OpenAI API key required for image generation. Click 🔑 OPENAI KEY.');showApiKeyModal();return;}
       setArcState('imaging');
       let imgPrompt=text.replace(/^(please\s+)?(generate|create|draw|make|render|show me|paint|produce|design)\s+(an?\s+)?(image|picture|photo|illustration|artwork|painting|sketch|portrait|scene|visual)?\s*(of\s+)?/i,'').replace(/^(please\s+)?/i,'').trim()||text;
       const progDiv=document.createElement('div');progDiv.id='img-gen-progress';progDiv.className='msg jarvis';
-      progDiv.innerHTML=`<span class="msg-label">▸ J.A.R.V.I.S RENDERING</span><div class="img-gen-progress"><div class="img-gen-spinner"></div><span>DALL-E 3: "${imgPrompt.slice(0,48)}${imgPrompt.length>48?'...':''}"</span></div>`;
+      progDiv.innerHTML=`<span class="msg-label">▸ J.A.R.V.I.S RENDERING</span><div class="img-gen-progress"><div class="img-gen-spinner"></div><span>FLUX.1: "${imgPrompt.slice(0,48)}${imgPrompt.length>48?'...':''}"</span></div>`;
       chatArea.appendChild(progDiv);chatArea.scrollTop=chatArea.scrollHeight;
       try{
-        const imgUrl=await generateImage(imgPrompt,openaiKey);progDiv.remove();removeTyping();
+        const imgUrl=await generateImage(imgPrompt);progDiv.remove();removeTyping();
         const imgDiv=document.createElement('div');imgDiv.className='msg jarvis';
         imgDiv.innerHTML=`<span class="msg-label">▸ J.A.R.V.I.S — IMAGE SYNTHESIS COMPLETE</span>`;
-        const wrap=document.createElement('div');wrap.className='msg-img-wrap generated';wrap.setAttribute('data-label','◈ DALL-E 3 · '+imgPrompt.slice(0,38).toUpperCase()+(imgPrompt.length>38?'...':''));
+        const wrap=document.createElement('div');wrap.className='msg-img-wrap generated';wrap.setAttribute('data-label','◈ FLUX.1 · '+imgPrompt.slice(0,38).toUpperCase()+(imgPrompt.length>38?'...':''));
         const img=document.createElement('img');img.src=imgUrl;img.alt=imgPrompt;img.style.cursor='pointer';img.title='Click to open full size';img.onclick=()=>window.open(imgUrl,'_blank');wrap.appendChild(img);imgDiv.appendChild(wrap);
         const rt='Image rendered, sir. DALL-E 3 synthesis complete.';
         const ts=document.createElement('span');ts.className='msg-text';ts.style.marginTop='6px';ts.textContent=rt;imgDiv.appendChild(ts);
