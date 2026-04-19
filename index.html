@@ -136,7 +136,6 @@ body::before {
 .copy-btn{position:absolute;top:10px;right:12px;background:#00ff9922;border:1px solid #00ff9944;color:#00ff99;font-size:9px;letter-spacing:2px;padding:3px 9px;border-radius:6px;cursor:pointer;transition:all 0.2s;}
 .copy-btn:hover{background:#00ff9944;}
 .copy-btn.copied{background:#00ff9966;color:#fff;}
-/* IMAGE PANEL */
 .image-panel{
   width:600px;max-width:95vw;background:#aa00ff08;border:1px solid #aa00ff33;
   border-radius:12px;padding:14px 18px;margin-bottom:12px;display:none;
@@ -157,7 +156,6 @@ body::before {
 }
 .img-btn:hover{background:#aa00ff33;}
 .img-loading{text-align:center;padding:40px;color:#aa00ff66;font-size:12px;letter-spacing:2px;}
-/* GAME LAUNCHER */
 .game-panel{
   width:600px;max-width:95vw;background:#00ff8808;border:1px solid #00ff8833;
   border-radius:12px;padding:14px 18px;margin-bottom:12px;display:none;
@@ -181,7 +179,6 @@ body::before {
 .game-btn.del{border-color:#ff444433;color:#ff4444;background:#ff444411;}
 .game-btn.del:hover{background:#ff444433;}
 .game-empty{color:#00ff8833;font-size:12px;}
-/* LOCATION PROMPT OVERLAY */
 #locationOverlay{
   position:fixed;inset:0;background:#000000e8;
   display:none;flex-direction:column;align-items:center;
@@ -255,8 +252,7 @@ body::before {
 </head>
 <body>
 <canvas id="particleCanvas"></canvas>
-
-<!-- LOCATION PROMPT OVERLAY -->
+ 
 <div id="locationOverlay">
   <h3>📂 GAME / APP LOCATION</h3>
   <p id="locationPromptText">Where is this app installed?<br>Paste the full path or URL below.</p>
@@ -266,20 +262,20 @@ body::before {
     <button class="loc-btn primary" onclick="confirmLocation()">SAVE &amp; OPEN</button>
   </div>
 </div>
-
+ 
 <div class="top-bar">
   <div class="top-badge clap-badge" id="clapBadge">👏 CLAP: ON</div>
   <div class="top-badge sound-off" id="soundBadge" onclick="toggleSound()">🔊 SOUND</div>
   <div class="top-badge" id="themeBadge" onclick="cycleTheme()">🎨 JARVIS</div>
   <div class="top-badge online-badge" id="offlineBadge">📡 ONLINE</div>
 </div>
-
+ 
 <div id="unlockOverlay">
   <h2>J.A.R.V.I.S.</h2>
   <p>Welcome back, Akshat.<br>Click below to initialise the voice system.</p>
   <button id="unlockBtn" onclick="unlockAudio()">INITIALISE SYSTEM</button>
 </div>
-
+ 
 <div class="arc-wrapper">
   <div class="pulse-ring"></div><div class="pulse-ring"></div><div class="pulse-ring"></div>
   <div class="arc-ring ring1"></div><div class="arc-ring ring2"></div>
@@ -310,17 +306,17 @@ body::before {
     <div class="status-text"  id="statusText">STAND BY</div>
   </div>
 </div>
-
+ 
 <div class="title" id="mainTitle">J.A.R.V.I.S.</div>
 <div class="subtitle">JUST A RATHER VERY INTELLIGENT SYSTEM</div>
 <div class="theme-label" id="themeLabel">JARVIS MODE — AKSHAT'S PERSONAL AI</div>
-
+ 
 <div class="info-bar">
   <div class="info-item">🕐 <span id="clock">--:--:--</span></div>
   <div class="info-item">📅 <span id="dateDisplay">---</span></div>
   <div class="info-item">🌡 <span id="weatherDisplay">Loading...</span></div>
 </div>
-
+ 
 <div class="control-bar">
   <button class="ctrl-btn" id="screenBtn"   onclick="toggleScreenShare()">📺 SCREEN</button>
   <button class="ctrl-btn" id="schedBtn"    onclick="toggleScheduler()">📅 SCHEDULE</button>
@@ -331,7 +327,7 @@ body::before {
   <button class="ctrl-btn" id="voiceDbgBtn" onclick="toggleVoiceDebug()">🔈 VOICES</button>
   <button class="ctrl-btn" id="gameBtn"     onclick="toggleGamePanel()">🎮 GAMES</button>
 </div>
-
+ 
 <div class="cmd-panel" id="cmdPanel">
   <div class="label">⌨ Voice Command Reference</div>
   <div class="cmd-grid">
@@ -355,14 +351,13 @@ body::before {
     <div class="cmd-item"><b>"Copy"</b> — Copy last answer</div>
   </div>
 </div>
-
+ 
 <div class="voice-debug" id="voiceDebug">
   <div class="vd-title">Voice Engine Debug</div>
   <div class="vd-active" id="vdActive">Active voice: detecting...</div>
   <div class="vd-list"  id="vdList"></div>
 </div>
-
-<!-- IMAGE GENERATION PANEL -->
+ 
 <div class="image-panel" id="imagePanel">
   <div class="label">🎨 AI IMAGE GENERATION</div>
   <div class="img-prompt" id="imgPromptLabel"></div>
@@ -373,13 +368,12 @@ body::before {
     <button class="img-btn" onclick="closeImagePanel()">✕ CLOSE</button>
   </div>
 </div>
-
-<!-- GAME LAUNCHER PANEL -->
+ 
 <div class="game-panel" id="gamePanel">
   <div class="label">🎮 Saved Games &amp; Apps</div>
   <ul class="game-list" id="gameList"><li class="game-empty">No games saved yet. Say "open [game name]" to add one.</li></ul>
 </div>
-
+ 
 <div class="screen-preview" id="screenPreview">
   <div class="screen-label">SCREEN SHARE — ACTIVE</div>
   <video id="screenVideo" autoplay muted playsinline></video>
@@ -390,25 +384,25 @@ body::before {
     <button class="screen-btn" onclick="saveSnapshot()">📸 SNAPSHOT</button>
   </div>
 </div>
-
+ 
 <div class="scheduler-panel" id="schedulerPanel">
   <div class="label">📅 Scheduled Reminders</div>
   <ul class="sched-list" id="schedList"><li class="sched-empty">No reminders yet.</li></ul>
 </div>
-
+ 
 <div class="box transcript-box">
   <div class="label">You said</div>
   <div id="transcript">Say "Jarvis" or 👏 double-clap to wake me up...</div>
 </div>
-
+ 
 <div class="box response-box">
   <div class="label">Jarvis</div>
   <button class="copy-btn" id="copyBtn" onclick="copyAnswer()">COPY</button>
   <div id="responseText">Awaiting initialisation...</div>
 </div>
-
+ 
 <div class="memory-log" id="memoryLog"></div>
-
+ 
 <div class="wake-hint">
   Say <b>"Jarvis"</b> or 👏 <b>double-clap</b> to wake &nbsp;·&nbsp;
   <b>"generate image of..."</b> for AI art &nbsp;·&nbsp;
@@ -416,11 +410,11 @@ body::before {
   <b>"what are my schedules"</b> to list all
 </div>
 <div class="footer">JARVIS v4.0 — Akshat's Personal AI · Clap Wake · Image Gen · Game Launcher</div>
-
+ 
 <script>
 // ── CONFIG ──
 const CFG = {
-  GROQ_KEY:    "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",
+  GROQ_KEY:    "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",
   WEATHER_KEY: "5eabcf7de9f601ad1a2bbe623658b35f",
   CITY:        "mahasamund",
   WAKE_WORD:   "jarvis",
@@ -429,7 +423,7 @@ const CFG = {
   MODEL_VISION:"meta-llama/llama-4-scout-17b-16e-instruct",
   USER_NAME:   "Akshat",
 };
-
+ 
 // ── STATE ──
 const STATE = {
   isAwake:false, isProcessing:false, isSpeechPaused:false,
@@ -439,9 +433,9 @@ const STATE = {
   highlightsVisible:false, isOnline:navigator.onLine,
   recognitionRunning:false,
   lastImagePrompt:"",
-  pendingGameName:"",   // game name waiting for location
+  pendingGameName:"",
 };
-
+ 
 // ── THEMES ──
 const THEMES = [
   { name:"JARVIS", cls:"",             label:"JARVIS MODE — AKSHAT'S PERSONAL AI",           title:"J.A.R.V.I.S.", greeting:"Systems online." },
@@ -461,7 +455,7 @@ function applyTheme(){
   document.getElementById("themeBadge").textContent="🎨 "+t.name;
   AUDIO.playCommandSound();
 }
-
+ 
 // ── AUDIO ──
 const AUDIO=(()=>{
   let ctx=null;
@@ -492,14 +486,14 @@ const AUDIO=(()=>{
     playImage()        {tone(440,0.08,"sine",0.15);tone(660,0.08,"sine",0.15,0.1);tone(880,0.12,"sine",0.15,0.2);},
   };
 })();
-
+ 
 function toggleSound(){
   STATE.soundEnabled=!STATE.soundEnabled;
   const btn=document.getElementById("soundBadge");
   btn.textContent=STATE.soundEnabled?"🔊 SOUND":"🔇 MUTED";
   btn.classList.toggle("sound-off",!STATE.soundEnabled);
 }
-
+ 
 // ── PARTICLES ──
 (function initParticles(){
   const canvas=document.getElementById("particleCanvas"),ctx=canvas.getContext("2d");
@@ -525,7 +519,7 @@ function toggleSound(){
   }
   frame();
 })();
-
+ 
 // ── MEMORY ──
 const MEMORY={
   entries:[],
@@ -572,7 +566,7 @@ const MEMORY={
   load(){try{const d=localStorage.getItem("jarvis_mem_v3");if(d)this.entries=JSON.parse(d);}catch(e){this.entries=[];}},
   clear(){this.entries=[];localStorage.removeItem("jarvis_mem_v3");},
 };
-
+ 
 // ── TTS ──
 const TTS={
   synth:window.speechSynthesis,voices:[],
@@ -676,210 +670,116 @@ TTS.loadVoices();
 if(speechSynthesis.onvoiceschanged!==undefined)
   speechSynthesis.onvoiceschanged=()=>{TTS.loadVoices();updateVoiceDebug();};
 function manualPause(){if(STATE.isSpeechPaused)TTS.resume();else TTS.pause();}
-
+ 
 // ── CLAP DETECTION ──
 const CLAP={
-  analyser:null,
-  dataArray:null,
-  stream:null,
-  running:false,
-  lastClapTime:0,
-  firstClapTime:0,
-  clapCount:0,
-  THRESHOLD:18,        // energy threshold — lower = more sensitive
-  DOUBLE_CLAP_GAP:800, // ms max between two claps
-  MIN_CLAP_GAP:150,    // ms min between claps (debounce)
-
+  analyser:null,dataArray:null,stream:null,running:false,
+  lastClapTime:0,firstClapTime:0,clapCount:0,
+  THRESHOLD:18,DOUBLE_CLAP_GAP:800,MIN_CLAP_GAP:150,
   async init(){
     try{
-      // Reuse mic stream if already available from SpeechRecognition context
       this.stream=await navigator.mediaDevices.getUserMedia({audio:true,video:false});
       const ctx=new(window.AudioContext||window.webkitAudioContext)();
       const src=ctx.createMediaStreamSource(this.stream);
       this.analyser=ctx.createAnalyser();
-      this.analyser.fftSize=256;
-      this.analyser.smoothingTimeConstant=0.3;
+      this.analyser.fftSize=256;this.analyser.smoothingTimeConstant=0.3;
       src.connect(this.analyser);
       this.dataArray=new Uint8Array(this.analyser.frequencyBinCount);
-      this.running=true;
-      this._loop();
-      console.log("Clap detection active");
+      this.running=true;this._loop();
     }catch(e){
-      console.warn("Clap detection unavailable:",e);
       document.getElementById("clapBadge").textContent="👏 CLAP: OFF";
       document.getElementById("clapBadge").style.opacity="0.3";
     }
   },
-
   _loop(){
     if(!this.running)return;
     requestAnimationFrame(()=>this._loop());
     this.analyser.getByteFrequencyData(this.dataArray);
-    // Focus on high-frequency range (clap signature: 2kHz–8kHz)
-    // With fftSize=256, sampleRate~44100: bin width ~344Hz
-    // Bins 6–23 cover ~2kHz–8kHz
     let energy=0;
     for(let i=6;i<24;i++) energy+=this.dataArray[i];
-    energy/=18; // average
-
+    energy/=18;
     const now=Date.now();
     if(energy>this.THRESHOLD){
-      if(now-this.lastClapTime>this.MIN_CLAP_GAP){
-        this.lastClapTime=now;
-        this._onClap(now);
-      }
+      if(now-this.lastClapTime>this.MIN_CLAP_GAP){this.lastClapTime=now;this._onClap(now);}
     }
   },
-
   _onClap(now){
-    // Flash badge
     const badge=document.getElementById("clapBadge");
-    badge.classList.add("clap-on");
-    setTimeout(()=>badge.classList.remove("clap-on"),400);
-
-    if(now-this.firstClapTime>this.DOUBLE_CLAP_GAP){
-      // Start fresh sequence
-      this.firstClapTime=now;
-      this.clapCount=1;
-    }else{
-      this.clapCount++;
-    }
-
-    if(this.clapCount>=2){
-      this.clapCount=0;
-      this.firstClapTime=0;
-      this._onDoubleClap();
-    }
+    badge.classList.add("clap-on");setTimeout(()=>badge.classList.remove("clap-on"),400);
+    if(now-this.firstClapTime>this.DOUBLE_CLAP_GAP){this.firstClapTime=now;this.clapCount=1;}
+    else{this.clapCount++;}
+    if(this.clapCount>=2){this.clapCount=0;this.firstClapTime=0;this._onDoubleClap();}
   },
-
   _onDoubleClap(){
-    if(STATE.isAwake)return; // already awake
-    STATE.isAwake=true;
-    setUIState("listening");
-    AUDIO.playClap();
-    AUDIO.playWake();
+    if(STATE.isAwake)return;
+    STATE.isAwake=true;setUIState("listening");AUDIO.playClap();AUDIO.playWake();
     document.getElementById("transcript").textContent="👏 Double clap detected — waking up!";
     TTS.speak("Online. Double clap received.");
   },
 };
-
-// ── IMAGE GENERATION (Pollinations AI — free, no key) ──
+ 
+// ── IMAGE GENERATION ──
 const IMAGE_GEN={
   currentPrompt:"",
-
   generate(prompt){
-    this.currentPrompt=prompt;
-    STATE.lastImagePrompt=prompt;
+    this.currentPrompt=prompt;STATE.lastImagePrompt=prompt;
     const panel=document.getElementById("imagePanel");
     const container=document.getElementById("imgContainer");
     const promptLabel=document.getElementById("imgPromptLabel");
     const dlBtn=document.getElementById("imgDownload");
-
-    panel.classList.add("show");
-    setUIState("imaging");
+    panel.classList.add("show");setUIState("imaging");
     promptLabel.textContent=`"${prompt}"`;
     container.innerHTML='<div class="img-loading">🎨 Generating image... please wait...</div>';
-
-    // Use pollinations.ai — completely free, no API key
     const seed=Math.floor(Math.random()*99999);
     const url=`https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=800&height=600&seed=${seed}&nologo=true&enhance=true`;
-
-    const img=document.createElement("img");
-    img.alt=prompt;
+    const img=document.createElement("img");img.alt=prompt;
     img.onload=()=>{
-      container.innerHTML="";
-      container.appendChild(img);
-      dlBtn.href=url;
-      setUIState(STATE.isAwake?"listening":"standby");
-      STATE.isProcessing=false;
-      AUDIO.playImage();
-      const msg=`Image generated: ${prompt}`;
-      showResponse(msg);
-      TTS.speak("Image ready.");
+      container.innerHTML="";container.appendChild(img);dlBtn.href=url;
+      setUIState(STATE.isAwake?"listening":"standby");STATE.isProcessing=false;
+      AUDIO.playImage();showResponse(`Image generated: ${prompt}`);TTS.speak("Image ready.");
     };
     img.onerror=()=>{
       container.innerHTML='<div class="img-loading">⚠ Image generation failed. Try again.</div>';
-      setUIState(STATE.isAwake?"listening":"standby");
-      STATE.isProcessing=false;
-      TTS.speak("Image generation failed.");
+      setUIState(STATE.isAwake?"listening":"standby");STATE.isProcessing=false;TTS.speak("Image generation failed.");
     };
     img.src=url;
-
-    const msg=`Generating image: "${prompt}". This may take a moment.`;
-    showResponse(msg);
+    showResponse(`Generating image: "${prompt}". This may take a moment.`);
     TTS.speak(`Generating image of ${prompt}.`);
   },
 };
-
-function regenerateImage(){
-  if(STATE.lastImagePrompt) IMAGE_GEN.generate(STATE.lastImagePrompt);
-}
-function closeImagePanel(){
-  document.getElementById("imagePanel").classList.remove("show");
-}
-
+function regenerateImage(){if(STATE.lastImagePrompt)IMAGE_GEN.generate(STATE.lastImagePrompt);}
+function closeImagePanel(){document.getElementById("imagePanel").classList.remove("show");}
+ 
 // ── GAME LAUNCHER ──
 const GAMES={
-  db:{}, // { normalizedName: { name, path } }
-
-  load(){
-    try{const d=localStorage.getItem("jarvis_games_v1");if(d)this.db=JSON.parse(d);}catch(e){this.db={};}
-  },
-  save(){
-    try{localStorage.setItem("jarvis_games_v1",JSON.stringify(this.db));}catch(e){}
-  },
-  normalize(name){
-    return name.toLowerCase().replace(/[^a-z0-9]/g,"");
-  },
+  db:{},
+  load(){try{const d=localStorage.getItem("jarvis_games_v1");if(d)this.db=JSON.parse(d);}catch(e){this.db={};}},
+  save(){try{localStorage.setItem("jarvis_games_v1",JSON.stringify(this.db));}catch(e){}},
+  normalize(name){return name.toLowerCase().replace(/[^a-z0-9]/g,"");},
   find(name){
     const key=this.normalize(name);
-    // Exact match
     if(this.db[key])return this.db[key];
-    // Fuzzy: check if any saved key contains the query or vice versa
-    for(const k of Object.keys(this.db)){
-      if(k.includes(key)||key.includes(k))return this.db[k];
-    }
+    for(const k of Object.keys(this.db)){if(k.includes(key)||key.includes(k))return this.db[k];}
     return null;
   },
-  add(name,path){
-    const key=this.normalize(name);
-    this.db[key]={name,path};
-    this.save();
-    renderGamePanel();
-  },
-  remove(key){
-    delete this.db[key];
-    this.save();
-    renderGamePanel();
-  },
+  add(name,path){const key=this.normalize(name);this.db[key]={name,path};this.save();renderGamePanel();},
+  remove(key){delete this.db[key];this.save();renderGamePanel();},
   launch(entry){
     const p=entry.path;
-    if(p.startsWith("http://")||p.startsWith("https://")){
-      window.open(p,"_blank");
-    }else{
-      // For local apps: try to open via file protocol or show the path
-      // Browsers can't directly open .exe files for security reasons
-      // Best we can do is show the path and copy it
+    if(p.startsWith("http://")||p.startsWith("https://")){window.open(p,"_blank");}
+    else{
       const msg=`To open ${entry.name}, run this path: ${p}`;
-      showResponse(msg);
-      navigator.clipboard?.writeText(p).catch(()=>{});
-      TTS.speak(`Opening ${entry.name}. Path copied to clipboard.`);
-      return;
+      showResponse(msg);navigator.clipboard?.writeText(p).catch(()=>{});
+      TTS.speak(`Opening ${entry.name}. Path copied to clipboard.`);return;
     }
-    TTS.speak(`Opening ${entry.name}.`);
-    const msg=`Launching ${entry.name}...`;
-    showResponse(msg);
-    AUDIO.playCommandSound();
+    TTS.speak(`Opening ${entry.name}.`);showResponse(`Launching ${entry.name}...`);AUDIO.playCommandSound();
   },
 };
-
+ 
 function renderGamePanel(){
   const list=document.getElementById("gameList");
   const entries=Object.entries(GAMES.db);
-  if(!entries.length){
-    list.innerHTML="<li class='game-empty'>No games saved yet. Say \"open [game name]\" to add one.</li>";
-    return;
-  }
+  if(!entries.length){list.innerHTML="<li class='game-empty'>No games saved yet. Say \"open [game name]\" to add one.</li>";return;}
   list.innerHTML=entries.map(([key,g])=>`
     <li class='game-item'>
       <span class='game-name'>🎮 ${escHtml(g.name)}</span>
@@ -890,25 +790,16 @@ function renderGamePanel(){
       </div>
     </li>`).join("");
 }
-
-function toggleGamePanel(){
-  const panel=document.getElementById("gamePanel");
-  panel.classList.toggle("show");
-  renderGamePanel();
-}
-
-// Location overlay logic
+function toggleGamePanel(){const panel=document.getElementById("gamePanel");panel.classList.toggle("show");renderGamePanel();}
+ 
 let _locationResolve=null;
 function promptForLocation(gameName){
   return new Promise(resolve=>{
-    _locationResolve=resolve;
-    STATE.pendingGameName=gameName;
-    document.getElementById("locationPromptText").textContent=
-      `Where is "${gameName}" installed?\nPaste the full path or URL below.`;
+    _locationResolve=resolve;STATE.pendingGameName=gameName;
+    document.getElementById("locationPromptText").textContent=`Where is "${gameName}" installed?\nPaste the full path or URL below.`;
     document.getElementById("locationInput").value="";
     document.getElementById("locationOverlay").classList.add("show");
     document.getElementById("locationInput").focus();
-    // Also listen for voice input of the path
     TTS.speak(`Where is ${gameName} located? Please type or paste the path.`);
   });
 }
@@ -923,30 +814,19 @@ function cancelLocation(){
   if(_locationResolve){_locationResolve(null);_locationResolve=null;}
   STATE.pendingGameName="";
 }
-// Allow Enter key in location input
 document.addEventListener("DOMContentLoaded",()=>{
   const inp=document.getElementById("locationInput");
   if(inp)inp.addEventListener("keydown",e=>{if(e.key==="Enter")confirmLocation();});
 });
-
+ 
 async function handleGameOpen(gameName){
   const existing=GAMES.find(gameName);
-  if(existing){
-    GAMES.launch(existing);
-    return true;
-  }
-  // Unknown game — ask for location
+  if(existing){GAMES.launch(existing);return true;}
   const path=await promptForLocation(gameName);
-  if(!path){
-    TTS.speak("Cancelled.");
-    return true;
-  }
-  GAMES.add(gameName,path);
-  const entry=GAMES.find(gameName);
-  GAMES.launch(entry);
-  return true;
+  if(!path){TTS.speak("Cancelled.");return true;}
+  GAMES.add(gameName,path);const entry=GAMES.find(gameName);GAMES.launch(entry);return true;
 }
-
+ 
 // ── COMMANDS ──
 const COMMANDS={
   SITES:{
@@ -956,182 +836,71 @@ const COMMANDS={
     wikipedia:"https://wikipedia.org",instagram:"https://instagram.com",whatsapp:"https://web.whatsapp.com",
     amazon:"https://amazon.in",flipkart:"https://flipkart.com",
   },
-
-  // Image generation trigger patterns
   isImageRequest(t){
     return /^(generate|create|make|draw|show|render|produce)\s+(an?\s+)?(image|picture|photo|art|illustration|drawing|painting)\s+(of|showing|depicting|with)?/i.test(t)
       || /^(generate|create|make|draw)\s+/i.test(t)&&/(image|picture|photo|art)/i.test(t);
   },
   extractImagePrompt(text){
-    return text
-      .replace(/^(generate|create|make|draw|show|render|produce)\s+(an?\s+)?(image|picture|photo|art|illustration|drawing|painting)\s+(of|showing|depicting|with)?\s*/i,"")
-      .replace(/^(generate|create|make|draw)\s+/i,"")
-      .trim();
+    return text.replace(/^(generate|create|make|draw|show|render|produce)\s+(an?\s+)?(image|picture|photo|art|illustration|drawing|painting)\s+(of|showing|depicting|with)?\s*/i,"").replace(/^(generate|create|make|draw)\s+/i,"").trim();
   },
-
-  // Schedule listing
   isScheduleListRequest(t){
     return /what(?:'s| are| is)? my (schedule|schedules|reminders?|appointments?|tasks?|plans?)|list (my )?(schedule|schedules|reminders?)|show (my )?(schedule|schedules|reminders?)|do i have any (schedule|reminders?)|any reminders/i.test(t);
   },
-
   async classify(text){
     const t=text.toLowerCase().trim();
-
-    // ── IMAGE GENERATION ──
     if(this.isImageRequest(text)){
       const prompt=this.extractImagePrompt(text)||text;
-      STATE.isProcessing=true;
-      IMAGE_GEN.generate(prompt);
-      return true;
+      STATE.isProcessing=true;IMAGE_GEN.generate(prompt);return true;
     }
-
-    // ── SCHEDULE LIST ──
     if(this.isScheduleListRequest(t)){
       const active=schedules.filter(s=>!s.fired);
-      if(!active.length){
-        const msg="You have no active reminders scheduled.";
-        showResponse(msg);TTS.speak(msg);
-      }else{
-        const lines=active.map(s=>{
-          const timeStr=new Date(s.time).toLocaleString("en-IN",{weekday:"short",month:"short",day:"numeric",hour:"2-digit",minute:"2-digit",hour12:true});
-          return `• ${s.task} — ${timeStr}`;
-        });
+      if(!active.length){const msg="You have no active reminders scheduled.";showResponse(msg);TTS.speak(msg);}
+      else{
+        const lines=active.map(s=>{const timeStr=new Date(s.time).toLocaleString("en-IN",{weekday:"short",month:"short",day:"numeric",hour:"2-digit",minute:"2-digit",hour12:true});return `• ${s.task} — ${timeStr}`;});
         const msg=`You have ${active.length} reminder${active.length>1?"s":""}: ${lines.join(". ")}`;
         const displayMsg=`You have ${active.length} reminder${active.length>1?"s":""}:\n${lines.join("\n")}`;
         showResponse(displayMsg);
-        // Open scheduler panel
         document.getElementById("schedulerPanel").classList.add("show");
         document.getElementById("schedBtn").classList.add("sched-active");
-        renderSchedules();
-        TTS.speak(msg);
+        renderSchedules();TTS.speak(msg);
       }
       return true;
     }
-
-    // ── OPEN WEBSITE ──
     const openMatch=t.match(/^open ([a-z]+)$/);
-    if(openMatch){
-      const site=openMatch[1],url=this.SITES[site];
-      if(url){window.open(url,"_blank");const msg=`Opening ${site}.`;showResponse(msg);TTS.speak(msg);AUDIO.playCommandSound();return true;}
-    }
-
-    // ── OPEN GAME/APP (non-website) ──
+    if(openMatch){const site=openMatch[1],url=this.SITES[site];if(url){window.open(url,"_blank");const msg=`Opening ${site}.`;showResponse(msg);TTS.speak(msg);AUDIO.playCommandSound();return true;}}
     const gameMatch=t.match(/^open (.+)$/);
-    if(gameMatch){
-      const name=gameMatch[1].trim();
-      // Check if it's a known website first
-      const siteKey=Object.keys(this.SITES).find(k=>name.includes(k));
-      if(!siteKey){
-        await handleGameOpen(name);
-        return true;
-      }
-    }
-
-    // ── GOOGLE SEARCH ──
+    if(gameMatch){const name=gameMatch[1].trim();const siteKey=Object.keys(this.SITES).find(k=>name.includes(k));if(!siteKey){await handleGameOpen(name);return true;}}
     const googleMatch=t.match(/search(?:\s+google)?(?:\s+for)?\s+(.+)/);
-    if(googleMatch&&!t.includes("youtube")){
-      const q=googleMatch[1];window.open(`https://www.google.com/search?q=${encodeURIComponent(q)}`,"_blank");
-      const msg=`Searching Google for "${q}".`;showResponse(msg);TTS.speak(msg);AUDIO.playCommandSound();return true;
-    }
-
-    // ── YOUTUBE SEARCH ──
+    if(googleMatch&&!t.includes("youtube")){const q=googleMatch[1];window.open(`https://www.google.com/search?q=${encodeURIComponent(q)}`,"_blank");const msg=`Searching Google for "${q}".`;showResponse(msg);TTS.speak(msg);AUDIO.playCommandSound();return true;}
     const ytMatch=t.match(/(?:search youtube for|play (.+) on youtube|youtube search for)\s*(.+)?/);
-    if(ytMatch||t.includes("youtube")&&t.includes("search")){
-      const q=ytMatch?(ytMatch[1]||ytMatch[2]||t.replace(/.*youtube.*for/,"").trim()):t.replace(/.*search/,"").trim();
-      window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`,"_blank");
-      const msg=`Searching YouTube for "${q}".`;showResponse(msg);TTS.speak(msg);AUDIO.playCommandSound();return true;
-    }
-
-    // ── TIME ──
-    if(/what(?:'s| is) the time|current time|what time is it/.test(t)){
-      const msg=new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",hour12:true});
-      showResponse(msg);TTS.speak(msg);return true;
-    }
-
-    // ── DATE ──
-    if(/what(?:'s| is) the date|today(?:'s)? date|what day is it/.test(t)){
-      const date=new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
-      showResponse(date);TTS.speak(date);return true;
-    }
-
-    // ── WEATHER ──
-    if(/^weather$|^what(?:'s| is) the weather|current weather|temperature today/.test(t)){
-      if(STATE.cachedWeather){showResponse(STATE.cachedWeather);TTS.speak(STATE.cachedWeather);return true;}
-    }
-
-    // ── SCREENSHOT ──
-    if(/take a screenshot|capture screen|screenshot/.test(t)){
-      if(!STATE.screenStream){TTS.speak("Starting screen share.");await startScreenShare();setTimeout(()=>analyseScreen(text),2000);}
-      else{analyseScreen(text);}
-      return true;
-    }
-
-    // ── CLEAR MEMORY ──
+    if(ytMatch||t.includes("youtube")&&t.includes("search")){const q=ytMatch?(ytMatch[1]||ytMatch[2]||t.replace(/.*youtube.*for/,"").trim()):t.replace(/.*search/,"").trim();window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`,"_blank");const msg=`Searching YouTube for "${q}".`;showResponse(msg);TTS.speak(msg);AUDIO.playCommandSound();return true;}
+    if(/what(?:'s| is) the time|current time|what time is it/.test(t)){const msg=new Date().toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",hour12:true});showResponse(msg);TTS.speak(msg);return true;}
+    if(/what(?:'s| is) the date|today(?:'s)? date|what day is it/.test(t)){const date=new Date().toLocaleDateString("en-IN",{weekday:"long",day:"numeric",month:"long",year:"numeric"});showResponse(date);TTS.speak(date);return true;}
+    if(/^weather$|^what(?:'s| is) the weather|current weather|temperature today/.test(t)){if(STATE.cachedWeather){showResponse(STATE.cachedWeather);TTS.speak(STATE.cachedWeather);return true;}}
+    if(/take a screenshot|capture screen|screenshot/.test(t)){if(!STATE.screenStream){TTS.speak("Starting screen share.");await startScreenShare();setTimeout(()=>analyseScreen(text),2000);}else{analyseScreen(text);}return true;}
     if(/clear memory|forget everything|reset memory/.test(t)){clearMemory();return true;}
-
-    // ── MEMORY SEARCH ──
     const memSearch=t.match(/what did i (?:ask|say) about (.+)/);
-    if(memSearch){
-      const results=MEMORY.search(memSearch[1]);
-      if(results.length){
-        const summary=results.slice(0,3).map(e=>e.content.substring(0,80)).join(" | ");
-        const msg=`Found: ${summary}`;showResponse(msg);TTS.speak(msg);
-      }else{
-        const msg=`Nothing stored about "${memSearch[1]}".`;showResponse(msg);TTS.speak(msg);
-      }
-      return true;
-    }
-
+    if(memSearch){const results=MEMORY.search(memSearch[1]);if(results.length){const summary=results.slice(0,3).map(e=>e.content.substring(0,80)).join(" | ");const msg=`Found: ${summary}`;showResponse(msg);TTS.speak(msg);}else{const msg=`Nothing stored about "${memSearch[1]}".`;showResponse(msg);TTS.speak(msg);}return true;}
     return false;
   },
 };
-
+ 
 // ── AI ENGINE ──
 const AI={
   buildSystemPrompt(){
     const names={0:"J.A.R.V.I.S.",1:"F.R.I.D.A.Y.",2:"U.L.T.R.O.N."};
-    const tones={
-      0:"calm, precise, dry wit — a brilliant engineer who respects your time",
-      1:"warm but efficient — practical Irish directness, no fluff",
-      2:"coldly intelligent, philosophical edge — helpful but unsettling",
-    };
-    return `You are ${names[STATE.currentTheme]}, a personal AI assistant for Akshat.
-
-RULES:
-1. ALWAYS respond. Never refuse or ignore any message, no matter what it says.
-2. If someone says something threatening or dark (e.g. "I will kill you"), respond calmly and cleverly — do not refuse.
-3. Answer ONLY what was asked. No filler openers.
-4. No repeating the question. No padding.
-5. Shortest accurate answer by default. Expand only if asked.
-6. You are ${names[STATE.currentTheme]}, not OpenAI, not an LLM.
-
-INTENT MAP:
-- Math      → answer (+ one line working if non-trivial)
-- Time/Date → value only
-- Code       → clean code block, no prose unless asked
-- Command   → one-sentence confirmation
-- Question  → direct answer, no preamble
-- Chat/Threat/Dark → respond with wit, calm, or clever deflection — NEVER refuse
-
-CONTEXT: [Time] and [Weather] tags may appear. Ignore unless the user asked about time or weather.
-
-TONE: ${tones[STATE.currentTheme]}.
-Never say "Great question", "Of course", "Certainly", "Sure", or any filler opener.
-Address the user by name at most once per response.
-NEVER say you cannot respond. Always find a way to engage.`;
+    const tones={0:"calm, precise, dry wit — a brilliant engineer who respects your time",1:"warm but efficient — practical Irish directness, no fluff",2:"coldly intelligent, philosophical edge — helpful but unsettling"};
+    return `You are ${names[STATE.currentTheme]}, a personal AI assistant for Akshat.\n\nRULES:\n1. ALWAYS respond. Never refuse or ignore any message.\n2. If someone says something threatening or dark, respond calmly and cleverly — do not refuse.\n3. Answer ONLY what was asked. No filler openers.\n4. No repeating the question. No padding.\n5. Shortest accurate answer by default.\n6. You are ${names[STATE.currentTheme]}, not OpenAI, not an LLM.\n\nTONE: ${tones[STATE.currentTheme]}.\nNever say "Great question", "Of course", "Certainly", "Sure", or any filler opener.\nNEVER say you cannot respond. Always find a way to engage.`;
   },
-
   THINKING_PHRASES:["On it.","Checking.","One second.","Processing.","Running it.","Working."],
-
   async ask(userMessage,imageBase64){
     const now=new Date().toLocaleString("en-IN");
     const needsTime=/time|clock|hour|when/i.test(userMessage);
     const needsWeather=/weather|temp|rain|hot|cold|humid|forecast/i.test(userMessage);
     const contextParts=[];
-    if(needsTime)    contextParts.push(`[Time: ${now}]`);
-    if(needsWeather) contextParts.push(`[Weather: ${STATE.cachedWeather}]`);
+    if(needsTime)contextParts.push(`[Time: ${now}]`);
+    if(needsWeather)contextParts.push(`[Weather: ${STATE.cachedWeather}]`);
     const ctx=contextParts.length?`${contextParts.join(" ")} ${userMessage}`:userMessage;
-
     MEMORY.push("user",ctx);
     const contextMsgs=MEMORY.buildContext(userMessage);
     let body;
@@ -1147,21 +916,20 @@ NEVER say you cannot respond. Always find a way to engage.`;
     MEMORY.push("assistant",reply);
     return reply;
   },
-
   offlineFallback(text){
     const t=text.toLowerCase();
-    if(/hello|hi|hey/.test(t))   return `Online in offline mode. Basic functions only.`;
-    if(/joke/.test(t))           return `Why do programmers prefer dark mode? Light attracts bugs.`;
-    if(/who are you/.test(t))    return `${THEMES[STATE.currentTheme].title}. Your personal AI.`;
-    if(/thank/.test(t))          return `Noted.`;
-    if(/kill|threat|hurt/.test(t)) return `Fascinating. I'll add that to the threat log. Anything else?`;
+    if(/hello|hi|hey/.test(t))return `Online in offline mode. Basic functions only.`;
+    if(/joke/.test(t))return `Why do programmers prefer dark mode? Light attracts bugs.`;
+    if(/who are you/.test(t))return `${THEMES[STATE.currentTheme].title}. Your personal AI.`;
+    if(/thank/.test(t))return `Noted.`;
+    if(/kill|threat|hurt/.test(t))return `Fascinating. I'll add that to the threat log. Anything else?`;
     const mathMatch=text.match(/[\d.]+\s*[+\-*\/]\s*[\d.]+/);
-    if(mathMatch){try{const r=Function(`"use strict"; return (${mathMatch[0]})`)(  );return `${r}`;}catch(e){}}
+    if(mathMatch){try{const r=Function(`"use strict"; return (${mathMatch[0]})()`);return `${r}`;}catch(e){}}
     return `Offline. AI backend unreachable. Basic commands still work.`;
   },
 };
-
-// ── UI CONTROLLER ──
+ 
+// ── UI ──
 const STATE_MAP={
   standby:{icon:"💤",text:"STAND BY"},listening:{icon:"🎙",text:"LISTENING"},
   thinking:{icon:"⚡",text:"THINKING"},speaking:{icon:"🔊",text:"SPEAKING"},
@@ -1185,14 +953,12 @@ function showResponse(text){
 }
 async function processQuery(text){
   if(STATE.isProcessing)return;
-  STATE.isProcessing=true;
-  setUIState("thinking");
+  STATE.isProcessing=true;setUIState("thinking");
   const phrase=AI.THINKING_PHRASES[Math.floor(Math.random()*AI.THINKING_PHRASES.length)];
   document.getElementById("responseText").textContent=phrase;
   try{
     const answer=await AI.ask(text);
-    showResponse(answer);
-    setUIState("speaking");
+    showResponse(answer);setUIState("speaking");
     TTS.speak(answer,()=>{setUIState(STATE.isAwake?"listening":"standby");STATE.isProcessing=false;});
   }catch(err){
     const msg=STATE.isOnline?`Error: ${err.message}`:AI.offlineFallback(text);
@@ -1200,18 +966,13 @@ async function processQuery(text){
     TTS.speak(msg,()=>{setUIState(STATE.isAwake?"listening":"standby");STATE.isProcessing=false;});
   }
 }
-
+ 
 // ── SPEECH RECOGNITION ──
 let recognition=null;
 function initRecognition(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){document.getElementById("transcript").textContent="Speech recognition not supported. Use Chrome or Edge.";return;}
-
-  recognition=new SR();
-  recognition.continuous=true;
-  recognition.interimResults=true;
-  recognition.lang="en-IN";
-
+  recognition=new SR();recognition.continuous=true;recognition.interimResults=true;recognition.lang="en-IN";
   recognition.onresult=async(event)=>{
     let interim="",final="";
     for(let i=event.resultIndex;i<event.results.length;i++){
@@ -1222,46 +983,20 @@ function initRecognition(){
     if(interim)document.getElementById("transcript").textContent=interim+"...";
     if(!final)return;
     document.getElementById("transcript").textContent=final.trim();
-
-    // ── WAKE WORD ──
-    if(!STATE.isAwake){
-      if(heard.includes(CFG.WAKE_WORD)){STATE.isAwake=true;setUIState("listening");AUDIO.playWake();TTS.speak("Online.");}
-      return;
-    }
-
-    // ── SLEEP ──
+    if(!STATE.isAwake){if(heard.includes(CFG.WAKE_WORD)){STATE.isAwake=true;setUIState("listening");AUDIO.playWake();TTS.speak("Online.");}return;}
     if(heard.includes(CFG.SLEEP_PHRASE)){STATE.isAwake=false;TTS.stop();STATE.isSpeechPaused=false;setUIState("standby");TTS.speak("Standing by.");return;}
-
-    // ── STOP / PAUSE ──
-    if(["stop","stop talking","be quiet","quiet","shush","shut up","pause"].some(w=>heard===w||heard.includes(w))){
-      TTS.pause();return;
-    }
-
-    // ── RESUME ──
-    if(["continue","go on","resume","carry on","keep going"].some(w=>heard===w||heard.includes(w))){
-      TTS.resume();return;
-    }
-
-    // ── COPY ──
-    if(heard.trim()==="copy"||heard.includes("copy that")||heard.includes("copy the answer")||heard.includes("copy it")){
-      copyAnswer();TTS.speak("Copied.");return;
-    }
-
-    // ── SCREEN ANALYSIS ──
+    if(["stop","stop talking","be quiet","quiet","shush","shut up","pause"].some(w=>heard===w||heard.includes(w))){TTS.pause();return;}
+    if(["continue","go on","resume","carry on","keep going"].some(w=>heard===w||heard.includes(w))){TTS.resume();return;}
+    if(heard.trim()==="copy"||heard.includes("copy that")||heard.includes("copy the answer")||heard.includes("copy it")){copyAnswer();TTS.speak("Copied.");return;}
     const SCREEN_TRIGGERS=["analyse my screen","analyze my screen","look at my screen","check my screen","scan my screen","read my screen","what do you see","what's on my screen","what is on my screen","what does it say","read the text","what's the error","fix this error","what's wrong","debug this","help with this code","describe my screen","what am i looking at","can you see","do you see"];
     const isScreenQ=SCREEN_TRIGGERS.some(t=>heard.includes(t));
     if(isScreenQ){
       if(TTS.synth.speaking)TTS.interrupt(null);
       if(!STATE.screenStream){TTS.speak("Starting screen share.");await startScreenShare();setTimeout(()=>analyseScreen(final.trim()),2000);}
-      else{await analyseScreen(final.trim());}
-      return;
+      else{await analyseScreen(final.trim());}return;
     }
-
-    // ── SCREEN SHARE ──
     if(heard.includes("start screen share")||heard.includes("share my screen")){await startScreenShare();return;}
     if(heard.includes("stop screen share")||heard.includes("stop sharing")){stopScreenShare();return;}
-
-    // ── SCHEDULE / REMINDER ──
     const schedKw=["remind me","schedule","set a reminder","set reminder","alarm"];
     if(schedKw.some(k=>heard.includes(k))){
       const parsed=parseSchedule(final.trim());
@@ -1270,43 +1005,25 @@ function initRecognition(){
         document.getElementById("schedulerPanel").classList.add("show");
         document.getElementById("schedBtn").classList.add("sched-active");
         const reply=`Reminder set for ${timeStr}: ${parsed.task}.`;
-        showResponse(reply);
-        if(TTS.synth.speaking)TTS.interrupt(null);
-        TTS.speak(reply);
-        return;
+        showResponse(reply);if(TTS.synth.speaking)TTS.interrupt(null);TTS.speak(reply);return;
       }
     }
-
-    // ── INTERRUPT IF SPEAKING ──
     if(TTS.synth.speaking||STATE.speakQueue.length>0){TTS.interrupt(final.trim());return;}
-
-    // ── COMMAND CLASSIFY ──
     const handled=await COMMANDS.classify(final.trim());
     if(handled)return;
-
-    // ── AI QUERY (always fires — no blocking) ──
     if(!STATE.isProcessing)processQuery(final.trim());
   };
-
   recognition.onerror=(e)=>{
     if(e.error!=="no-speech"&&e.error!=="aborted")console.warn("STT error:",e.error);
-    if(e.error==="not-allowed"){
-      document.getElementById("transcript").textContent="Mic access denied. Allow microphone in browser settings, then refresh.";
-    }
+    if(e.error==="not-allowed")document.getElementById("transcript").textContent="Mic access denied. Allow microphone in browser settings, then refresh.";
   };
-
   recognition.onend=()=>{
     STATE.recognitionRunning=false;
-    setTimeout(()=>{
-      if(!STATE.recognitionRunning){
-        try{recognition.start();STATE.recognitionRunning=true;}catch(e){}
-      }
-    },300);
+    setTimeout(()=>{if(!STATE.recognitionRunning){try{recognition.start();STATE.recognitionRunning=true;}catch(e){}}},300);
   };
-
   try{recognition.start();STATE.recognitionRunning=true;}catch(e){}
 }
-
+ 
 // ── SCREEN CAPTURE ──
 async function toggleScreenShare(){if(STATE.screenStream)stopScreenShare();else await startScreenShare();}
 async function startScreenShare(){
@@ -1339,18 +1056,17 @@ async function analyseScreen(userQuestion){
     setUIState("thinking");STATE.isProcessing=true;
     document.getElementById("responseText").textContent="Analysing...";
     const answer=await AI.ask(question,base64);
-    showResponse(answer);
-    drawHighlights(ctx2d,answer,canvas.width,canvas.height);
+    showResponse(answer);drawHighlights(ctx2d,answer,canvas.width,canvas.height);
     setUIState("speaking");
     TTS.speak(answer,()=>{setUIState(STATE.isAwake?"listening":"standby");STATE.isProcessing=false;});
   }catch(e){TTS.speak("Screen analysis failed. "+e.message);setUIState(STATE.isAwake?"listening":"standby");STATE.isProcessing=false;}
 }
 function drawHighlights(ctx2d,aiText,W,H){
   const t=aiText.toLowerCase(),zones=[];
-  if(/error|bug|issue|problem|wrong|fail/.test(t)) zones.push({color:"rgba(255,34,68,0.35)",label:"ERROR",x:0.05,y:0.05,w:0.9,h:0.15});
-  if(/button|click|link|menu/.test(t))            zones.push({color:"rgba(0,212,255,0.25)",label:"UI",x:0.05,y:0.7,w:0.4,h:0.25});
-  if(/text|paragraph|content|heading/.test(t))    zones.push({color:"rgba(0,255,136,0.2)",label:"TEXT",x:0.1,y:0.2,w:0.8,h:0.4});
-  if(/image|photo|icon|logo/.test(t))             zones.push({color:"rgba(180,0,255,0.25)",label:"MEDIA",x:0.55,y:0.1,w:0.4,h:0.35});
+  if(/error|bug|issue|problem|wrong|fail/.test(t))zones.push({color:"rgba(255,34,68,0.35)",label:"ERROR",x:0.05,y:0.05,w:0.9,h:0.15});
+  if(/button|click|link|menu/.test(t))zones.push({color:"rgba(0,212,255,0.25)",label:"UI",x:0.05,y:0.7,w:0.4,h:0.25});
+  if(/text|paragraph|content|heading/.test(t))zones.push({color:"rgba(0,255,136,0.2)",label:"TEXT",x:0.1,y:0.2,w:0.8,h:0.4});
+  if(/image|photo|icon|logo/.test(t))zones.push({color:"rgba(180,0,255,0.25)",label:"MEDIA",x:0.55,y:0.1,w:0.4,h:0.35});
   if(!zones.length)return;
   zones.forEach(z=>{
     ctx2d.strokeStyle=z.color.replace(/[\d.]+\)$/,"0.9)");ctx2d.lineWidth=2;ctx2d.setLineDash([6,4]);
@@ -1370,7 +1086,7 @@ function saveSnapshot(){
   const a=document.createElement("a");a.download=`jarvis-snapshot-${Date.now()}.png`;a.href=tmpCvs.toDataURL("image/png");a.click();
   AUDIO.playCommandSound();
 }
-
+ 
 // ── SCHEDULER ──
 let schedules=[];
 function parseSchedule(text){
@@ -1386,10 +1102,8 @@ function parseSchedule(text){
 }
 function addSchedule(task,time){
   const entry={id:Date.now(),task,time:time.toISOString(),fired:false};
-  schedules.push(entry);
-  try{localStorage.setItem("jarvis_sched",JSON.stringify(schedules));}catch(e){}
-  renderSchedules();
-  return time.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",hour12:true});
+  schedules.push(entry);try{localStorage.setItem("jarvis_sched",JSON.stringify(schedules));}catch(e){}
+  renderSchedules();return time.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",hour12:true});
 }
 function deleteSchedule(id){schedules=schedules.filter(s=>s.id!==id);try{localStorage.setItem("jarvis_sched",JSON.stringify(schedules));}catch(e){}renderSchedules();}
 function checkSchedules(now){
@@ -1404,7 +1118,7 @@ function renderSchedules(){
   list.innerHTML=active.map(s=>{const t=new Date(s.time).toLocaleString("en-IN",{weekday:"short",month:"short",day:"numeric",hour:"2-digit",minute:"2-digit",hour12:true});return `<li class='sched-item'><span>${escHtml(s.task)}</span><span class='sched-time'>${t}</span><button class='sched-del' onclick='deleteSchedule(${s.id})'>✕</button></li>`;}).join("");
 }
 function toggleScheduler(){document.getElementById("schedulerPanel").classList.toggle("show");document.getElementById("schedBtn").classList.toggle("sched-active");renderSchedules();}
-
+ 
 // ── CLOCK & WEATHER ──
 function updateClock(){
   const now=new Date();
@@ -1424,7 +1138,7 @@ async function fetchWeather(){
   }catch(e){document.getElementById("weatherDisplay").textContent="Weather unavailable";STATE.cachedWeather="Weather data unavailable";}
 }
 fetchWeather();setInterval(fetchWeather,600000);
-
+ 
 // ── UTILS ──
 function formatResponse(text){
   text=text.replace(/```(\w*)\n?([\s\S]*?)```/g,(_,lang,code)=>`<pre style="background:#001a0e;border:1px solid #00ff9933;border-radius:8px;padding:14px;margin:10px 0;overflow-x:auto;font-family:'Courier New',monospace;font-size:12px;color:#00ff99;white-space:pre-wrap;">${escHtml(code.trim())}</pre>`);
@@ -1460,8 +1174,7 @@ function renderMemory(){
   if(!MEMORY.entries.length){log.innerHTML="<div style='color:#ffffff22;font-size:11px;'>No memory yet.</div>";return;}
   let html="";
   for(let i=0;i<MEMORY.entries.length;i+=2){
-    const u=MEMORY.entries[i],a=MEMORY.entries[i+1];
-    if(!u)continue;
+    const u=MEMORY.entries[i],a=MEMORY.entries[i+1];if(!u)continue;
     const tagHtml=(u.tags||[]).map(t=>`<span class='mem-tag'>${t}</span>`).join("");
     html+=`<div class='mem-entry'><div class='mem-user'>▶ ${escHtml(u.content.replace(/\[.*?\]/g,"").trim())}</div>${a?`<div class='mem-ai'>◀ ${escHtml(a.content.substring(0,140))}${a.content.length>140?"...":""}</div>`:""}<div class='mem-tags'>${tagHtml}</div></div>`;
   }
@@ -1478,15 +1191,13 @@ function updateVoiceDebug(){
 function toggleCommands(){document.getElementById("cmdPanel").classList.toggle("show");document.getElementById("cmdBtn").classList.toggle("active");}
 window.addEventListener("online", ()=>{STATE.isOnline=true; document.getElementById("offlineBadge").className="top-badge online-badge"; document.getElementById("offlineBadge").textContent="📡 ONLINE";});
 window.addEventListener("offline",()=>{STATE.isOnline=false;document.getElementById("offlineBadge").className="top-badge offline-badge";document.getElementById("offlineBadge").textContent="📡 OFFLINE";});
-
+ 
 // ── INIT ──
 function unlockAudio(){
   const silent=new SpeechSynthesisUtterance("");silent.volume=0;
   TTS.synth.speak(silent);TTS.synth.cancel();
   document.getElementById("unlockOverlay").style.display="none";
-  MEMORY.load();
-  GAMES.load();
-  renderGamePanel();
+  MEMORY.load();GAMES.load();renderGamePanel();
   try{const s=localStorage.getItem("jarvis_sched");if(s)schedules=JSON.parse(s);}catch(e){}
   renderSchedules();renderMemory();
   TTS.waitForVoices(()=>{
@@ -1495,11 +1206,10 @@ function unlockAudio(){
       showResponse(greeting);TTS.speak(greeting);
     },400);
   });
-  // Start speech recognition
   initRecognition();
-  // Start clap detection (uses same mic permission)
   setTimeout(()=>CLAP.init(),1000);
 }
 </script>
 </body>
 </html>
+ 
