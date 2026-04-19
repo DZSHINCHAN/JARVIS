@@ -390,6 +390,23 @@ body::before {
   <ul class="sched-list" id="schedList"><li class="sched-empty">No reminders yet.</li></ul>
 </div>
  
+<!-- MIC FIX BANNER -->
+<div id="micFixBtn" style="display:none;width:600px;max-width:95vw;background:#ff444411;border:1px solid #ff444444;border-radius:12px;padding:12px 18px;margin-bottom:12px;font-size:12px;color:#ff4444;letter-spacing:1px;align-items:center;gap:12px;flex-wrap:wrap;">
+  <span>🎙 Microphone blocked.</span>
+  <span style="opacity:0.7;font-size:11px;">Click the 🔒 lock in your address bar → Microphone → Allow → then reload:</span>
+  <button onclick="location.reload()" style="background:#ff444422;border:1px solid #ff4444;color:#ff4444;padding:5px 14px;border-radius:8px;cursor:pointer;font-size:11px;letter-spacing:1px;">🔄 RELOAD</button>
+</div>
+ 
+<!-- API KEY PANEL -->
+<div id="apiKeyPanel" style="display:none;width:600px;max-width:95vw;background:#ffcc0008;border:1px solid #ffcc0044;border-radius:12px;padding:14px 18px;margin-bottom:12px;">
+  <div style="font-size:9px;letter-spacing:3px;color:#ffcc0099;text-transform:uppercase;margin-bottom:10px;">⚠ Invalid Groq API Key — Enter a valid key below</div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;">
+    <input id="apiKeyInput" type="password" placeholder="Paste your Groq key: gsk_..." style="flex:1;min-width:200px;background:#1a1200;border:1px solid #ffcc0066;color:#ffcc00;font-size:12px;padding:8px 12px;border-radius:8px;outline:none;font-family:monospace;" />
+    <button onclick="saveApiKey()" style="background:#ffcc0022;border:1px solid #ffcc0077;color:#ffcc00;font-size:11px;letter-spacing:1px;padding:8px 16px;border-radius:8px;cursor:pointer;">SAVE &amp; RETRY</button>
+  </div>
+  <div style="font-size:10px;color:#ffcc0055;margin-top:8px;">Free key at <a href="https://console.groq.com" target="_blank" style="color:#ffcc00aa;">console.groq.com</a></div>
+</div>
+ 
 <div class="box transcript-box">
   <div class="label">You said</div>
   <div id="transcript">Say "Jarvis" or 👏 double-clap to wake me up...</div>
@@ -431,7 +448,7 @@ const STATE = {
   cachedWeather:"", lastAnswer:"", speakQueue:[],
   pausedRemaining:"", currentSpeakCB:null, currentUtterance:null,
   highlightsVisible:false, isOnline:navigator.onLine,
-  recognitionRunning:false,
+  recognitionRunning:false, micBlocked:false,
   lastImagePrompt:"",
   pendingGameName:"",
 };
@@ -958,13 +975,39 @@ async function processQuery(text){
   document.getElementById("responseText").textContent=phrase;
   try{
     const answer=await AI.ask(text);
+    document.getElementById("apiKeyPanel").style.display="none";
     showResponse(answer);setUIState("speaking");
     TTS.speak(answer,()=>{setUIState(STATE.isAwake?"listening":"standby");STATE.isProcessing=false;});
   }catch(err){
-    const msg=STATE.isOnline?`Error: ${err.message}`:AI.offlineFallback(text);
-    showResponse(msg);AUDIO.playError();
-    TTS.speak(msg,()=>{setUIState(STATE.isAwake?"listening":"standby");STATE.isProcessing=false;});
+    STATE.isProcessing=false;
+    const msg=err.message||"";
+    const isKeyErr=/invalid api key|api key|unauthorized|401/i.test(msg);
+    if(isKeyErr){
+      showResponse("⚠ Invalid API Key. Enter your Groq key below.");
+      document.getElementById("apiKeyPanel").style.display="block";
+      document.getElementById("apiKeyInput").focus();
+      setUIState(STATE.isAwake?"listening":"standby");
+      return;
+    }
+    const displayMsg=STATE.isOnline?`Error: ${msg}`:AI.offlineFallback(text);
+    showResponse(displayMsg);AUDIO.playError();
+    TTS.speak(displayMsg,()=>{setUIState(STATE.isAwake?"listening":"standby");STATE.isProcessing=false;});
   }
+}
+ 
+function saveApiKey(){
+  const key=document.getElementById("apiKeyInput").value.trim();
+  if(!key||!key.startsWith("gsk_")){
+    document.getElementById("apiKeyInput").style.borderColor="#ff4444";
+    setTimeout(()=>document.getElementById("apiKeyInput").style.borderColor="#ffcc0066",1500);
+    return;
+  }
+  CFG.GROQ_KEY=key;
+  try{localStorage.setItem("jarvis_groq_key",key);}catch(e){}
+  document.getElementById("apiKeyPanel").style.display="none";
+  document.getElementById("apiKeyInput").value="";
+  showResponse("API key saved. Try again.");
+  TTS.speak("API key updated. Ready.");
 }
  
 // ── SPEECH RECOGNITION ──
@@ -1014,11 +1057,19 @@ function initRecognition(){
     if(!STATE.isProcessing)processQuery(final.trim());
   };
   recognition.onerror=(e)=>{
+    if(e.error==="not-allowed"){
+      STATE.micBlocked=true;
+      STATE.recognitionRunning=false;
+      document.getElementById("transcript").textContent="⚠ Mic blocked. Click the 🔒 icon in your browser address bar → allow microphone → refresh.";
+      document.getElementById("micFixBtn").style.display="flex";
+      console.warn("Mic access denied — stopping retries.");
+      return;
+    }
     if(e.error!=="no-speech"&&e.error!=="aborted")console.warn("STT error:",e.error);
-    if(e.error==="not-allowed")document.getElementById("transcript").textContent="Mic access denied. Allow microphone in browser settings, then refresh.";
   };
   recognition.onend=()=>{
     STATE.recognitionRunning=false;
+    if(STATE.micBlocked)return; // do NOT retry if mic was blocked
     setTimeout(()=>{if(!STATE.recognitionRunning){try{recognition.start();STATE.recognitionRunning=true;}catch(e){}}},300);
   };
   try{recognition.start();STATE.recognitionRunning=true;}catch(e){}
@@ -1197,6 +1248,8 @@ function unlockAudio(){
   const silent=new SpeechSynthesisUtterance("");silent.volume=0;
   TTS.synth.speak(silent);TTS.synth.cancel();
   document.getElementById("unlockOverlay").style.display="none";
+  // Load saved API key if any
+  try{const k=localStorage.getItem("jarvis_groq_key");if(k&&k.startsWith("gsk_"))CFG.GROQ_KEY=k;}catch(e){}
   MEMORY.load();GAMES.load();renderGamePanel();
   try{const s=localStorage.getItem("jarvis_sched");if(s)schedules=JSON.parse(s);}catch(e){}
   renderSchedules();renderMemory();
